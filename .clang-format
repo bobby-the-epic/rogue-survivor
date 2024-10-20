@@ -1,0 +1,6 @@
+BasedOnStyle: Microsoft
+IndentCaseLabels: true
+AlwaysBreakTemplateDeclarations: Yes
+PointerAlignment: Left
+AllowShortFunctionsOnASingleLine: InlineOnly
+Standard: c++20
