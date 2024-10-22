@@ -18,7 +18,6 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // APlayerCharacter
-
 APlayerCharacter::APlayerCharacter()
 {
     // Set size for collision capsule
@@ -60,7 +59,6 @@ APlayerCharacter::APlayerCharacter()
 	zoomedOutFOV = FollowCamera->FieldOfView;
     zoomedInFOV = zoomedOutFOV - 30;
 }
-
 void APlayerCharacter::BeginPlay()
 {
     // Call the base class
@@ -84,10 +82,8 @@ void APlayerCharacter::Tick(float DeltaTime)
         elapsedTime += DeltaTime;
     }
 }
-
 //////////////////////////////////////////////////////////////////////////
 // Input
-
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     // Add Input Mapping Context
@@ -125,7 +121,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
                *GetNameSafe(this));
     }
 }
-
 void APlayerCharacter::Move(const FInputActionValue& Value)
 {
     // input is a Vector2D
@@ -148,7 +143,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
         AddMovementInput(RightDirection, MovementVector.X);
     }
 }
-
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
     // input is a Vector2D
