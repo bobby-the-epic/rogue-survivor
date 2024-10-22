@@ -168,10 +168,3 @@ void APlayerCharacter::ZoomOut()
     GetCharacterMovement()->bUseControllerDesiredRotation = false;
     IsAiming = false;
 }
-bool APlayerCharacter::CanJumpInternal_Implementation() const
-{
-    // Disables jumping if the player is aiming
-    if (IsAiming)
-        return false;
-    return Super::CanJumpInternal_Implementation();
-}
