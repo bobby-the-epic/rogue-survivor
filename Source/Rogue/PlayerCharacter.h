@@ -44,6 +44,17 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* LookAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* AimAction;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool IsAiming = false;
+
+    float zoomedInFOV;
+    float zoomedOutFOV;
+    float elapsedTime = 0;
+    float duration = 3;
+
   public:
     APlayerCharacter();
 
@@ -54,12 +65,17 @@ class APlayerCharacter : public ACharacter
     /** Called for looking input */
     void Look(const FInputActionValue& Value);
 
+    void ZoomIn();
+    void ZoomOut();
+
   protected:
     // APawn interface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     // To add mapping context
     virtual void BeginPlay();
+    virtual void Tick(float DeltaTime) override;
+    virtual bool CanJumpInternal_Implementation() const override;
 
   public:
     /** Returns CameraBoom subobject **/

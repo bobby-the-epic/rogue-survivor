@@ -1,5 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
+// This class is based on the default third person template 
+
 #include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -55,6 +57,8 @@ APlayerCharacter::APlayerCharacter()
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	zoomedOutFOV = FollowCamera->FieldOfView;
+    zoomedInFOV = zoomedOutFOV - 30;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -66,6 +70,19 @@ void APlayerCharacter::BeginPlay()
     GetMesh()->HideBoneByName(FName("Knife_Offhand"), PBO_None);
     GetMesh()->HideBoneByName(FName("Throwable"), PBO_None);
     GetMesh()->HideBoneByName(FName("1H_Crossbow"), PBO_None);
+}
+void APlayerCharacter::Tick(float DeltaTime)
+{
+    if (IsAiming)
+    {
+        FollowCamera->FieldOfView = FMath::Lerp(FollowCamera->FieldOfView, zoomedInFOV, elapsedTime / duration);
+        elapsedTime += DeltaTime;
+    }
+    else if (!IsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
+    {
+        FollowCamera->FieldOfView = FMath::Lerp(FollowCamera->FieldOfView, zoomedOutFOV, elapsedTime / duration);
+        elapsedTime += DeltaTime;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -96,6 +113,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         // Looking
         EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
+
+        EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
+        EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
     }
     else
     {
@@ -140,4 +160,24 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
     }
+}
+void APlayerCharacter::ZoomIn()
+{
+    GetCharacterMovement()->bOrientRotationToMovement = false;
+    GetCharacterMovement()->bUseControllerDesiredRotation = true;
+    IsAiming = true;
+}
+void APlayerCharacter::ZoomOut()
+{
+    elapsedTime = 0;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    IsAiming = false;
+}
+bool APlayerCharacter::CanJumpInternal_Implementation() const
+{
+    // Disables jumping if the player is aiming
+    if (IsAiming)
+        return false;
+    return Super::CanJumpInternal_Implementation();
 }
