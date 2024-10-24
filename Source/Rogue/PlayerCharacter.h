@@ -74,4 +74,8 @@ class APlayerCharacter : public ACharacter
     // To add mapping context
     virtual void BeginPlay();
     virtual void Tick(float DeltaTime) override;
+
+    private:
+    void ZoomIn();
+    void ZoomOut();
 };
