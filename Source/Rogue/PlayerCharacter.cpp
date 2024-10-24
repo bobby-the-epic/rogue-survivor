@@ -117,7 +117,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
     // input is a Vector2D
     FVector2D MovementVector = Value.Get<FVector2D>();
 
-    if (Controller != nullptr)
+    if (Controller != nullptr && !IsDead)
     {
         // find out which way is forward
         const FRotator Rotation = Controller->GetControlRotation();
@@ -148,18 +148,24 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 }
 void APlayerCharacter::ZoomIn()
 {
-    GetCharacterMovement()->bOrientRotationToMovement = false;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;
-    IsAiming = true;
-    SetCameraFOV();
+    if (!IsDead)
+    {
+        GetCharacterMovement()->bOrientRotationToMovement = false;
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        IsAiming = true;
+        SetCameraFOV();
+    }
 }
 void APlayerCharacter::ZoomOut()
 {
-    elapsedTime = 0;
-    GetCharacterMovement()->bOrientRotationToMovement = true;
-    GetCharacterMovement()->bUseControllerDesiredRotation = false;
-    IsAiming = false;
-    SetCameraFOV();
+    if (!IsDead)
+    {
+        elapsedTime = 0;
+        GetCharacterMovement()->bOrientRotationToMovement = true;
+        GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        IsAiming = false;
+        SetCameraFOV();
+    }
 }
 void APlayerCharacter::SetCameraFOV()
 {
@@ -178,4 +184,10 @@ void APlayerCharacter::Attack()
 {
     UseWeapon = true;
     GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
+}
+bool APlayerCharacter::CanJumpInternal_Implementation() const
+{
+    if (IsDead)
+        return false;
+    return Super::CanJumpInternal_Implementation();
 }
