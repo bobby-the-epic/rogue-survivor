@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-// This class is based on the default third person template 
+// This class is based on the default third person template
 
 #include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
@@ -56,7 +56,7 @@ APlayerCharacter::APlayerCharacter()
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	zoomedOutFOV = FollowCamera->FieldOfView;
+    zoomedOutFOV = FollowCamera->FieldOfView;
     zoomedInFOV = zoomedOutFOV - 30;
 }
 void APlayerCharacter::BeginPlay()
@@ -71,21 +71,6 @@ void APlayerCharacter::BeginPlay()
 }
 void APlayerCharacter::Tick(float DeltaTime)
 {
-    if (IsAiming)
-    {
-        FollowCamera->FieldOfView = FMath::Lerp(FollowCamera->FieldOfView, zoomedInFOV, elapsedTime / duration);
-        elapsedTime += DeltaTime;
-    }
-    else if (!IsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
-    {
-        FollowCamera->FieldOfView = FMath::Lerp(FollowCamera->FieldOfView, zoomedOutFOV, elapsedTime / duration);
-        elapsedTime += DeltaTime;
-    }
-
-    // Trigger for attacking. Had to put it in Tick to let it register for a frame.
-    // Otherwise, the blueprint wouldn't detect it.
-    if (UseWeapon)
-        UseWeapon = false;
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -117,7 +102,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
-        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack); 
+        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
     }
     else
     {
@@ -166,6 +151,7 @@ void APlayerCharacter::ZoomIn()
     GetCharacterMovement()->bOrientRotationToMovement = false;
     GetCharacterMovement()->bUseControllerDesiredRotation = true;
     IsAiming = true;
+    SetCameraFOV();
 }
 void APlayerCharacter::ZoomOut()
 {
@@ -173,8 +159,23 @@ void APlayerCharacter::ZoomOut()
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->bUseControllerDesiredRotation = false;
     IsAiming = false;
+    SetCameraFOV();
+}
+void APlayerCharacter::SetCameraFOV()
+{
+    if (IsAiming && FollowCamera->FieldOfView != zoomedInFOV)
+    {
+        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedInFOV, FApp().GetDeltaTime(), 5);
+        GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
+    }
+    else if (!IsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
+    {
+        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedOutFOV, FApp().GetDeltaTime(), 5);
+        GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
+    }
 }
 void APlayerCharacter::Attack()
 {
     UseWeapon = true;
+    GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
 }

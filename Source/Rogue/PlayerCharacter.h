@@ -23,7 +23,7 @@ class APlayerCharacter : public ACharacter
     float zoomedInFOV;
     float zoomedOutFOV;
     float elapsedTime = 0;
-    float duration = 3;
+    float duration = 6;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsAiming = false;
@@ -63,7 +63,7 @@ class APlayerCharacter : public ACharacter
 
   public:
     APlayerCharacter();
-	/** Returns CameraBoom subobject **/
+    /** Returns CameraBoom subobject **/
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
@@ -82,5 +82,6 @@ class APlayerCharacter : public ACharacter
   private:
     void ZoomIn();
     void ZoomOut();
+    void SetCameraFOV();
     void Attack();
 };
