@@ -81,6 +81,11 @@ void APlayerCharacter::Tick(float DeltaTime)
         FollowCamera->FieldOfView = FMath::Lerp(FollowCamera->FieldOfView, zoomedOutFOV, elapsedTime / duration);
         elapsedTime += DeltaTime;
     }
+
+    // Trigger for attacking. Had to put it in Tick to let it register for a frame.
+    // Otherwise, the blueprint wouldn't detect it.
+    if (UseWeapon)
+        UseWeapon = false;
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -112,6 +117,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
+        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack); 
     }
     else
     {
@@ -167,4 +173,8 @@ void APlayerCharacter::ZoomOut()
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->bUseControllerDesiredRotation = false;
     IsAiming = false;
+}
+void APlayerCharacter::Attack()
+{
+    UseWeapon = true;
 }

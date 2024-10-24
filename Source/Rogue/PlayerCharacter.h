@@ -28,6 +28,9 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsAiming = false;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    bool UseWeapon = false;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
@@ -55,6 +58,9 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* AimAction;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+    UInputAction* ShootAction;
+
   public:
     APlayerCharacter();
 	/** Returns CameraBoom subobject **/
@@ -67,15 +73,14 @@ class APlayerCharacter : public ACharacter
     void Move(const FInputActionValue& Value);
     /** Called for looking input */
     void Look(const FInputActionValue& Value);
-    void ZoomIn();
-    void ZoomOut();
     // APawn interface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay();
     virtual void Tick(float DeltaTime) override;
 
-    private:
+  private:
     void ZoomIn();
     void ZoomOut();
+    void Attack();
 };
