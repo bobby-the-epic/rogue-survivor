@@ -31,6 +31,9 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool UseWeapon = false;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool IsDead = false;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
