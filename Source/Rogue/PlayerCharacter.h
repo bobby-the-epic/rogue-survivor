@@ -28,7 +28,7 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsAiming = false;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool UseWeapon = false;
 
     /** Camera boom positioning the camera behind the character */
