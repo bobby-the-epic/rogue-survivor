@@ -26,13 +26,13 @@ class APlayerCharacter : public ACharacter
     float duration = 6;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool IsAiming = false;
+    bool bIsAiming = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool UseWeapon = false;
+    bool bUseWeapon = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool IsDead = false;
+    bool bIsDead = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     bool bWeaponReady = true;

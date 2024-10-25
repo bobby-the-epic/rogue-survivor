@@ -118,7 +118,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
     // input is a Vector2D
     FVector2D MovementVector = Value.Get<FVector2D>();
 
-    if (Controller != nullptr && !IsDead)
+    if (Controller != nullptr && !bIsDead)
     {
         // find out which way is forward
         const FRotator Rotation = Controller->GetControlRotation();
@@ -149,33 +149,33 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 }
 void APlayerCharacter::ZoomIn()
 {
-    if (!IsDead)
+    if (!bIsDead)
     {
         GetCharacterMovement()->bOrientRotationToMovement = false;
         GetCharacterMovement()->bUseControllerDesiredRotation = true;
-        IsAiming = true;
+        bIsAiming = true;
         SetCameraFOV();
     }
 }
 void APlayerCharacter::ZoomOut()
 {
-    if (!IsDead)
+    if (!bIsDead)
     {
         elapsedTime = 0;
         GetCharacterMovement()->bOrientRotationToMovement = true;
         GetCharacterMovement()->bUseControllerDesiredRotation = false;
-        IsAiming = false;
+        bIsAiming = false;
         SetCameraFOV();
     }
 }
 void APlayerCharacter::SetCameraFOV()
 {
-    if (IsAiming && FollowCamera->FieldOfView != zoomedInFOV)
+    if (bIsAiming && FollowCamera->FieldOfView != zoomedInFOV)
     {
         FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedInFOV, FApp().GetDeltaTime(), 5);
         GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
     }
-    else if (!IsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
+    else if (!bIsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
     {
         FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedOutFOV, FApp().GetDeltaTime(), 5);
         GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
@@ -183,10 +183,10 @@ void APlayerCharacter::SetCameraFOV()
 }
 void APlayerCharacter::Attack()
 {
-    if (!IsDead)
+    if (!bIsDead)
     {
-        UseWeapon = true;
-        GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
+        bUseWeapon = true;
+        GetWorldTimerManager().SetTimerForNextTick([this] { bUseWeapon = false; });
 
         if (bWeaponReady)
         {
@@ -196,7 +196,7 @@ void APlayerCharacter::Attack()
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {
-    if (IsDead)
+    if (bIsDead)
         return false;
     return Super::CanJumpInternal_Implementation();
 }
