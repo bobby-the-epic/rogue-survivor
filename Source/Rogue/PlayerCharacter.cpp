@@ -182,8 +182,11 @@ void APlayerCharacter::SetCameraFOV()
 }
 void APlayerCharacter::Attack()
 {
-    UseWeapon = true;
-    GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
+    if (!IsDead)
+    {
+        UseWeapon = true;
+        GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
+    }
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {
