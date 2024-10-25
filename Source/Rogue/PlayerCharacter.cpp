@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -186,6 +187,11 @@ void APlayerCharacter::Attack()
     {
         UseWeapon = true;
         GetWorldTimerManager().SetTimerForNextTick([this] { UseWeapon = false; });
+
+        if (bWeaponReady)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 1, FColor::White, TEXT("Hello"));
+        }
     }
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
