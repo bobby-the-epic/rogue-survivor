@@ -3,9 +3,11 @@
 // This class is based on the default third person template
 
 #include "PlayerCharacter.h"
+#include "ArrowProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "CoreMinimal.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
@@ -190,7 +192,17 @@ void APlayerCharacter::Attack()
 
         if (bWeaponReady)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 1, FColor::White, TEXT("Hello"));
+            FVector CameraLocation;
+            FRotator CameraRotation;
+            GetActorEyesViewPoint(CameraLocation, CameraRotation);
+            FActorSpawnParameters SpawnParams;
+            SpawnParams.Owner = this;
+            SpawnParams.Instigator = GetInstigator();
+            FTransform CrossbowTransform = GetMesh()->GetBoneTransform("2H_Crossbow");
+            AArrowProjectile* Projectile = GetWorld()->SpawnActor<AArrowProjectile>(
+                ProjectileClass, CrossbowTransform.GetLocation(), CameraRotation, SpawnParams);
+            FVector LaunchDirection = CameraRotation.Vector();
+            Projectile->FireInDirection(LaunchDirection);
         }
     }
 }
