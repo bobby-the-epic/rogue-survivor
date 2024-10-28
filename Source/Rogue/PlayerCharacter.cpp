@@ -203,8 +203,27 @@ void APlayerCharacter::Attack()
                 ProjectileClass, CrossbowTransform.GetLocation(), CameraRotation, SpawnParams);
             FVector LaunchDirection = CameraRotation.Vector();
             Projectile->FireInDirection(LaunchDirection);
+            if (!bIsAiming)
+                RotateCharacter();
         }
     }
+}
+/*
+        Rotates the character in the direction the camera is facing when
+        the player shoots without aiming (AKA hip fire).
+*/
+void APlayerCharacter::RotateCharacter()
+{
+    FTimerHandle TimerHandle;
+    GetCharacterMovement()->bOrientRotationToMovement = false;
+    GetCharacterMovement()->bUseControllerDesiredRotation = true;
+    GetWorldTimerManager().SetTimer(
+        TimerHandle,
+        [this] {
+            GetCharacterMovement()->bOrientRotationToMovement = true;
+            GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        },
+        0.35f, false);
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {

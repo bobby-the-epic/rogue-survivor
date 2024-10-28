@@ -94,4 +94,5 @@ class APlayerCharacter : public ACharacter
     void ZoomOut();
     void SetCameraFOV();
     void Attack();
+    void RotateCharacter();
 };
