@@ -192,17 +192,35 @@ void APlayerCharacter::Attack()
 
         if (bWeaponReady)
         {
+            bWeaponReady = false;
             FVector CameraLocation;
             FRotator CameraRotation;
+            FVector LaunchDirection;
             GetActorEyesViewPoint(CameraLocation, CameraRotation);
             CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
             SpawnParams.Instigator = GetInstigator();
             FTransform CrossbowTransform = GetMesh()->GetBoneTransform("2H_Crossbow");
+
+            // Line trace
+            FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
+            FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
+            FHitResult HitResult;
+            GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
+            if (HitResult.bBlockingHit)
+            {
+                // DrawDebugLine(GetWorld(), CameraLocation, HitResult.ImpactPoint, FColor::Green, false, 2.0f);
+                LaunchDirection = (HitResult.ImpactPoint - CrossbowTransform.GetLocation()).GetSafeNormal();
+            }
+            else
+            {
+                // DrawDebugLine(GetWorld(), CameraLocation, TraceEnd, FColor::Red, false, 2.0f);
+                LaunchDirection = (TraceEnd - CrossbowTransform.GetLocation()).GetSafeNormal();
+            }
+            // Spawn the arrow and fire it in the launch direction
             AArrowProjectile* Projectile = GetWorld()->SpawnActor<AArrowProjectile>(
-                ProjectileClass, CrossbowTransform.GetLocation(), CameraRotation, SpawnParams);
-            FVector LaunchDirection = CameraRotation.Vector();
+                ProjectileClass, CrossbowTransform.GetLocation(), LaunchDirection.Rotation(), SpawnParams);
             Projectile->FireInDirection(LaunchDirection);
             if (!bIsAiming)
                 RotateCharacter();
