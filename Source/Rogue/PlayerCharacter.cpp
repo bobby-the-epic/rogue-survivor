@@ -195,6 +195,7 @@ void APlayerCharacter::Attack()
             FVector CameraLocation;
             FRotator CameraRotation;
             GetActorEyesViewPoint(CameraLocation, CameraRotation);
+            CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = this;
             SpawnParams.Instigator = GetInstigator();
