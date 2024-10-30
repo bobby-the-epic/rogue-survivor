@@ -85,7 +85,6 @@ class APlayerCharacter : public ACharacter
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay();
-    virtual void Tick(float DeltaTime) override;
     virtual bool CanJumpInternal_Implementation() const override;
 
   private:

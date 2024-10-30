@@ -71,9 +71,6 @@ void APlayerCharacter::BeginPlay()
     GetMesh()->HideBoneByName(FName("Throwable"), PBO_None);
     GetMesh()->HideBoneByName(FName("1H_Crossbow"), PBO_None);
 }
-void APlayerCharacter::Tick(float DeltaTime)
-{
-}
 //////////////////////////////////////////////////////////////////////////
 // Input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
