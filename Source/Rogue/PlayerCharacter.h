@@ -20,10 +20,9 @@ class APlayerCharacter : public ACharacter
 {
     GENERATED_BODY()
 
-    float zoomedInFOV;
-    float zoomedOutFOV;
-    float elapsedTime = 0;
-    float duration = 6;
+    float ZoomedInFOV;
+    float ZoomedOutFOV;
+    float ElapsedTime = 0;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;

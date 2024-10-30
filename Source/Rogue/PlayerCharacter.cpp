@@ -59,8 +59,8 @@ APlayerCharacter::APlayerCharacter()
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-    zoomedOutFOV = FollowCamera->FieldOfView;
-    zoomedInFOV = zoomedOutFOV - 30;
+    ZoomedOutFOV = FollowCamera->FieldOfView;
+    ZoomedInFOV = ZoomedOutFOV - 30;
 }
 void APlayerCharacter::BeginPlay()
 {
@@ -163,7 +163,7 @@ void APlayerCharacter::ZoomOut()
 {
     if (!bIsDead)
     {
-        elapsedTime = 0;
+        ElapsedTime = 0;
         GetCharacterMovement()->bOrientRotationToMovement = true;
         GetCharacterMovement()->bUseControllerDesiredRotation = false;
         bIsAiming = false;
@@ -172,14 +172,14 @@ void APlayerCharacter::ZoomOut()
 }
 void APlayerCharacter::SetCameraFOV()
 {
-    if (bIsAiming && FollowCamera->FieldOfView != zoomedInFOV)
+    if (bIsAiming && FollowCamera->FieldOfView != ZoomedInFOV)
     {
-        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedInFOV, FApp().GetDeltaTime(), 5);
+        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, ZoomedInFOV, FApp().GetDeltaTime(), 5);
         GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
     }
-    else if (!bIsAiming && FollowCamera->FieldOfView != zoomedOutFOV)
+    else if (!bIsAiming && FollowCamera->FieldOfView != ZoomedOutFOV)
     {
-        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, zoomedOutFOV, FApp().GetDeltaTime(), 5);
+        FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, ZoomedOutFOV, FApp().GetDeltaTime(), 5);
         GetWorldTimerManager().SetTimerForNextTick(this, &APlayerCharacter::SetCameraFOV);
     }
 }
