@@ -8,7 +8,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -208,12 +207,10 @@ void APlayerCharacter::Attack()
         GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
         if (HitResult.bBlockingHit)
         {
-            // DrawDebugLine(GetWorld(), CameraLocation, HitResult.ImpactPoint, FColor::Green, false, 2.0f);
             LaunchDirection = (HitResult.ImpactPoint - CrossbowTransform.GetLocation()).GetSafeNormal();
         }
         else
         {
-            // DrawDebugLine(GetWorld(), CameraLocation, TraceEnd, FColor::Red, false, 2.0f);
             LaunchDirection = (TraceEnd - CrossbowTransform.GetLocation()).GetSafeNormal();
         }
         // Spawn the arrow and fire it in the launch direction
