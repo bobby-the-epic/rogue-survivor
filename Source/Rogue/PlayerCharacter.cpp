@@ -102,6 +102,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
         EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
+        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFiring);
+        EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Canceled, this, &APlayerCharacter::StopFiring);
     }
     else
     {
@@ -184,38 +186,51 @@ void APlayerCharacter::Attack()
     if (!bIsDead && bWeaponReady)
     {
         bUseWeapon = true;
-        GetWorldTimerManager().SetTimerForNextTick([this] { bUseWeapon = false; });
         bWeaponReady = false;
-
-        FVector CameraLocation;
-        FRotator CameraRotation;
-        FVector LaunchDirection;
-        GetActorEyesViewPoint(CameraLocation, CameraRotation);
-        CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
-        FActorSpawnParameters SpawnParams;
-        SpawnParams.Owner = this;
-        SpawnParams.Instigator = GetInstigator();
-        FTransform CrossbowTransform = GetMesh()->GetBoneTransform("2H_Crossbow");
-
-        // Line trace
-        FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
-        FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
-        FHitResult HitResult;
-        GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
-        if (HitResult.bBlockingHit)
+        GetCharacterMovement()->bOrientRotationToMovement = false;
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        if (!bFullAutoFire && !bIsAiming)
         {
-            LaunchDirection = (HitResult.ImpactPoint - CrossbowTransform.GetLocation()).GetSafeNormal();
-        }
-        else
-        {
-            LaunchDirection = (TraceEnd - CrossbowTransform.GetLocation()).GetSafeNormal();
-        }
-        // Spawn the arrow and fire it in the launch direction
-        AArrowProjectile* Projectile = GetWorld()->SpawnActor<AArrowProjectile>(
-            ProjectileClass, CrossbowTransform.GetLocation(), LaunchDirection.Rotation(), SpawnParams);
-        Projectile->FireInDirection(LaunchDirection);
-        if (!bIsAiming)
             RotateCharacter();
+        }
+    }
+}
+void APlayerCharacter::FireArrow()
+{
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    FVector LaunchDirection;
+    GetActorEyesViewPoint(CameraLocation, CameraRotation);
+    CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Owner = this;
+    SpawnParams.Instigator = GetInstigator();
+    FTransform CrossbowTransform = GetMesh()->GetBoneTransform("2H_Crossbow");
+
+    // Line trace
+    FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
+    FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
+    FHitResult HitResult;
+    GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
+    if (HitResult.bBlockingHit)
+    {
+        LaunchDirection = (HitResult.ImpactPoint - CrossbowTransform.GetLocation()).GetSafeNormal();
+    }
+    else
+    {
+        LaunchDirection = (TraceEnd - CrossbowTransform.GetLocation()).GetSafeNormal();
+    }
+    // Spawn the arrow and fire it in the launch direction
+    AArrowProjectile* Projectile = GetWorld()->SpawnActor<AArrowProjectile>(
+        ProjectileClass, CrossbowTransform.GetLocation(), LaunchDirection.Rotation(), SpawnParams);
+    Projectile->FireInDirection(LaunchDirection);
+}
+void APlayerCharacter::StopFiring()
+{
+    bUseWeapon = false;
+    if (bFullAutoFire && !bIsAiming)
+    {
+        RotateCharacter();
     }
 }
 /*
@@ -225,8 +240,6 @@ void APlayerCharacter::Attack()
 void APlayerCharacter::RotateCharacter()
 {
     FTimerHandle TimerHandle;
-    GetCharacterMovement()->bOrientRotationToMovement = false;
-    GetCharacterMovement()->bUseControllerDesiredRotation = true;
     GetWorldTimerManager().SetTimer(
         TimerHandle,
         [this] {

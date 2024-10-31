@@ -36,6 +36,9 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     bool bWeaponReady = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool bFullAutoFire = false;
+
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
 
@@ -76,6 +79,9 @@ class APlayerCharacter : public ACharacter
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+    UFUNCTION(BlueprintCallable)
+    void FireArrow();
+
   protected:
     /** Called for movement input */
     void Move(const FInputActionValue& Value);
@@ -93,4 +99,5 @@ class APlayerCharacter : public ACharacter
     void SetCameraFOV();
     void Attack();
     void RotateCharacter();
+    void StopFiring();
 };
