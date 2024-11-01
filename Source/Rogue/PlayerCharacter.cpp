@@ -241,7 +241,10 @@ void APlayerCharacter::FireArrow()
     AArrowProjectile* Arrow;
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
-    PlaceholderArrow->SetActorHiddenInGame(true);
+    if (!bFullAutoFire)
+    {
+        PlaceholderArrow->SetActorHiddenInGame(true);
+    }
     Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
     Arrow->FireInDirection(LaunchDirection);
 }
