@@ -86,6 +86,7 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->SetActorRelativeLocation(ArrowOffset);
     PlaceholderArrow->ProjectileMovementComponent->DestroyComponent();
     PlaceholderArrow->SetActorEnableCollision(false);
+    PlaceholderArrow->SetLifeSpan(0);
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
