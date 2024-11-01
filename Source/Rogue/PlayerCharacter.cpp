@@ -81,8 +81,10 @@ void APlayerCharacter::BeginPlay()
     FRotator CrossbowRotation = GetMesh()->GetBoneTransform("2H_Crossbow").Rotator();
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
-    PlaceholderArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
-    PlaceholderArrow->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "2H_Crossbow");
+    PlaceholderArrow =
+        GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
+    PlaceholderArrow->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
+                                        "2H_Crossbow");
     PlaceholderArrow->SetActorRelativeLocation(ArrowOffset);
     PlaceholderArrow->ProjectileMovementComponent->DestroyComponent();
     PlaceholderArrow->SetActorEnableCollision(false);
