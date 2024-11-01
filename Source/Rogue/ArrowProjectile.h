@@ -10,12 +10,15 @@ class ROGUE_API AArrowProjectile : public AActor
 {
     GENERATED_BODY()
 
-    UPROPERTY(VisibleDefaultsOnly, meta = (AllowPrivateAccess = "true"))
-    UStaticMeshComponent* ArrowMesh;
-
-    UPROPERTY(VisibleAnywhere)
+public:
+   UPROPERTY(VisibleAnywhere)
     UProjectileMovementComponent* ProjectileMovementComponent;
 
+private:
+ UPROPERTY(VisibleDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+    UStaticMeshComponent* ArrowMesh;
+
+    
   public:
     AArrowProjectile();
     void FireInDirection(const FVector& ShootDirection);

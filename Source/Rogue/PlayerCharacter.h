@@ -42,6 +42,12 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
 
+    UPROPERTY(VisibleAnywhere)
+    AArrowProjectile* PlaceholderArrow;
+
+    UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    FVector ArrowOffset;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
@@ -81,6 +87,9 @@ class APlayerCharacter : public ACharacter
 
     UFUNCTION(BlueprintCallable)
     void FireArrow();
+
+    UFUNCTION(BlueprintCallable)
+    void ReloadArrow();
 
   protected:
     /** Called for movement input */

@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
+#include "Engine/EngineTypes.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -66,10 +67,25 @@ void APlayerCharacter::BeginPlay()
     // Call the base class
     Super::BeginPlay();
 
+    // Hides all the unused weapons from the mesh.
     GetMesh()->HideBoneByName(FName("Knife"), PBO_None);
     GetMesh()->HideBoneByName(FName("Knife_Offhand"), PBO_None);
     GetMesh()->HideBoneByName(FName("Throwable"), PBO_None);
     GetMesh()->HideBoneByName(FName("1H_Crossbow"), PBO_None);
+
+    // Spawns a placeholder arrow to simulate reloading the crossbow.
+    // The arrow's visibility is toggled off and on when the player reloads.
+    // There is no arrow in the reload animation, so I did it with code instead.
+
+    FVector CrossbowLocation = GetMesh()->GetBoneLocation("2H_Crossbow");
+    FRotator CrossbowRotation = GetMesh()->GetBoneTransform("2H_Crossbow").Rotator();
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Instigator = this;
+    PlaceholderArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
+    PlaceholderArrow->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, "2H_Crossbow");
+    PlaceholderArrow->SetActorRelativeLocation(ArrowOffset);
+    PlaceholderArrow->ProjectileMovementComponent->DestroyComponent();
+    PlaceholderArrow->SetActorEnableCollision(false);
 }
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -202,10 +218,8 @@ void APlayerCharacter::FireArrow()
     FVector LaunchDirection;
     GetActorEyesViewPoint(CameraLocation, CameraRotation);
     CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
-    FActorSpawnParameters SpawnParams;
-    SpawnParams.Owner = this;
-    SpawnParams.Instigator = GetInstigator();
-    FTransform CrossbowTransform = GetMesh()->GetBoneTransform("2H_Crossbow");
+    FVector CrossbowLocation = GetMesh()->GetBoneLocation("2H_Crossbow");
+    FRotator CrossbowRotation = GetMesh()->GetBoneTransform("2H_Crossbow").Rotator();
 
     // Line trace
     FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
@@ -214,16 +228,23 @@ void APlayerCharacter::FireArrow()
     GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
     if (HitResult.bBlockingHit)
     {
-        LaunchDirection = (HitResult.ImpactPoint - CrossbowTransform.GetLocation()).GetSafeNormal();
+        LaunchDirection = (HitResult.ImpactPoint - CrossbowLocation).GetSafeNormal();
     }
     else
     {
-        LaunchDirection = (TraceEnd - CrossbowTransform.GetLocation()).GetSafeNormal();
+        LaunchDirection = (TraceEnd - CrossbowLocation).GetSafeNormal();
     }
     // Spawn the arrow and fire it in the launch direction
-    AArrowProjectile* Projectile = GetWorld()->SpawnActor<AArrowProjectile>(
-        ProjectileClass, CrossbowTransform.GetLocation(), LaunchDirection.Rotation(), SpawnParams);
-    Projectile->FireInDirection(LaunchDirection);
+    AArrowProjectile* Arrow;
+    FActorSpawnParameters SpawnParams;
+    SpawnParams.Instigator = this;
+    PlaceholderArrow->SetActorHiddenInGame(true);
+    Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
+    Arrow->FireInDirection(LaunchDirection);
+}
+void APlayerCharacter::ReloadArrow()
+{
+    PlaceholderArrow->SetActorHiddenInGame(false);
 }
 void APlayerCharacter::StopFiring()
 {
