@@ -39,6 +39,9 @@ class APlayerCharacter : public ACharacter
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bFullAutoFire = false;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool bMultishotEnabled = false;
+
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
 

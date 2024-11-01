@@ -247,6 +247,29 @@ void APlayerCharacter::FireArrow()
     }
     Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
     Arrow->FireInDirection(LaunchDirection);
+    if (bMultishotEnabled)
+    {
+        /*
+            Gets the Crossbow right vector by cross product of the launch direction
+            (which is the direction the crosshair is facing) and the world space up
+            vector (Z axis). The location and launch direction of the two extra arrows
+            is then calculated.
+        */
+        FVector CrossbowRightVector = FVector::CrossProduct(LaunchDirection, FVector::UpVector).GetSafeNormal();
+        FVector LeftSpawnLocation = CrossbowLocation + (CrossbowRightVector * 30.f);
+        FVector RightSpawnLocation = CrossbowLocation - (CrossbowRightVector * 30.f);
+        FVector LeftDirection = LaunchDirection.RotateAngleAxis(-25, FVector::UpVector);
+        FVector RightDirection = LaunchDirection.RotateAngleAxis(25, FVector::UpVector);
+        AArrowProjectile* LeftArrow =
+            GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, LeftSpawnLocation, CrossbowRotation, SpawnParams);
+        AArrowProjectile* RightArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, RightSpawnLocation,
+                                                                                CrossbowRotation, SpawnParams);
+        LeftArrow->FireInDirection(LeftDirection);
+        RightArrow->FireInDirection(RightDirection);
+        // Rename the arrows in the editor for debugging
+        LeftArrow->SetActorLabel("Left Arrow");
+        RightArrow->SetActorLabel("Right Arrow");
+    }
 }
 void APlayerCharacter::ReloadArrow()
 {
