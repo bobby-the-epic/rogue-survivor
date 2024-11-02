@@ -15,6 +15,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter
     UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* ShieldMesh;
 
+    UPROPERTY(VisibleDefaultsOnly)
+    UCapsuleComponent* WeaponCollider;
+
   public:
     ASkeletonWarrior();
 };
