@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "ArrowProjectile.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
@@ -23,6 +24,7 @@ class APlayerCharacter : public ACharacter
     float ZoomedInFOV;
     float ZoomedOutFOV;
     float ElapsedTime = 0;
+    AArrowProjectile* PlaceholderArrow;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
@@ -44,9 +46,6 @@ class APlayerCharacter : public ACharacter
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
-
-    UPROPERTY(VisibleAnywhere)
-    AArrowProjectile* PlaceholderArrow;
 
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
     FVector ArrowOffset;

@@ -3,7 +3,6 @@
 // This class is based on the default third person template
 
 #include "PlayerCharacter.h"
-#include "ArrowProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
