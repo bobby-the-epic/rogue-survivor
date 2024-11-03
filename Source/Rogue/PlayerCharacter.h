@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ArrowProjectile.h"
+#include "CombatInterface.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
@@ -17,13 +18,16 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config = Game)
-class APlayerCharacter : public ACharacter
+class APlayerCharacter : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
 
     float ZoomedInFOV;
     float ZoomedOutFOV;
     float ElapsedTime = 0;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 Health = 100;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
@@ -88,6 +92,8 @@ class APlayerCharacter : public ACharacter
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+    virtual void TakeDamage(int32 Damage) override;
 
     UFUNCTION(BlueprintCallable)
     void FireArrow();

@@ -1,4 +1,5 @@
 #include "ArrowProjectile.h"
+#include "CombatInterface.h"
 
 AArrowProjectile::AArrowProjectile()
 {
@@ -31,5 +32,10 @@ void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
     if (OtherActor->IsA<APawn>())
     {
         Destroy();
+        ICombatInterface* HitActor = Cast<ICombatInterface>(OtherActor);
+        if (HitActor != nullptr)
+        {
+            HitActor->TakeDamage(5);
+        }
     }
 }

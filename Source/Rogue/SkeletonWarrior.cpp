@@ -13,3 +13,8 @@ ASkeletonWarrior::ASkeletonWarrior()
     WeaponCollider = CreateDefaultSubobject<UCapsuleComponent>("WeaponCollider");
     WeaponCollider->SetupAttachment(GetMesh(), "handslot_r");
 }
+void ASkeletonWarrior::TakeDamage(int32 Damage)
+{
+    Health -= Damage;
+    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("%i"), Health));
+}

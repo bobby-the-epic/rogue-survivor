@@ -297,6 +297,10 @@ void APlayerCharacter::RotateCharacter()
         },
         0.35f, false);
 }
+void APlayerCharacter::TakeDamage(int32 Damage)
+{
+    Health -= Damage;
+}
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {
     if (bIsDead)
