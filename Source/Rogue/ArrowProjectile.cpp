@@ -14,6 +14,12 @@ void AArrowProjectile::BeginPlay()
     Super::BeginPlay();
     ArrowMesh->OnComponentHit.AddDynamic(this, &AArrowProjectile::OnHit);
 }
+void AArrowProjectile::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    // Unsubscribe from the delegate
+    ArrowMesh->OnComponentHit.RemoveDynamic(this, &AArrowProjectile::OnHit);
+    Super::EndPlay(EndPlayReason);
+}
 void AArrowProjectile::FireInDirection(const FVector& ShootDirection)
 {
     ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;

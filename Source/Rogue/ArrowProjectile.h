@@ -28,4 +28,5 @@ class ROGUE_API AArrowProjectile : public AActor
 
   protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };
