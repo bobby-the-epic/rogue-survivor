@@ -1,3 +1,4 @@
+StatementMacros: ['UPROPERTY', 'UFUNCTION', 'UCLASS', 'USTRUCT', 'UENUM', 'UINTERFACE', 'GENERATED_BODY']
 BasedOnStyle: Microsoft
 IndentCaseLabels: true
 AlwaysBreakTemplateDeclarations: Yes
