@@ -24,7 +24,6 @@ class APlayerCharacter : public ACharacter
     float ZoomedInFOV;
     float ZoomedOutFOV;
     float ElapsedTime = 0;
-    AArrowProjectile* PlaceholderArrow;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
@@ -49,6 +48,9 @@ class APlayerCharacter : public ACharacter
 
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
     FVector ArrowOffset;
+
+    UPROPERTY()
+    AArrowProjectile* PlaceholderArrow;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
