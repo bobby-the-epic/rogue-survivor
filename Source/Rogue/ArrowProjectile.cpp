@@ -28,4 +28,8 @@ void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
                              FVector NormalImpulse, const FHitResult& Hit)
 {
     GEngine->AddOnScreenDebugMessage(-1, 1, FColor::White, TEXT("Hit"));
+    if (OtherActor->IsA<APawn>())
+    {
+        Destroy();
+    }
 }
