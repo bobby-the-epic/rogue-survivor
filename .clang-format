@@ -1,4 +1,4 @@
-StatementMacros: ['UPROPERTY', 'UFUNCTION', 'UCLASS', 'USTRUCT', 'UENUM', 'UINTERFACE', 'GENERATED_BODY']
+StatementMacros: ['UPROPERTY', 'UFUNCTION', 'UCLASS', 'USTRUCT', 'UENUM', 'UINTERFACE', 'GENERATED_BODY', 'DECLARE_DELEGATE', 'DECLARE_DELEGATE_OneParam']
 BasedOnStyle: Microsoft
 IndentCaseLabels: true
 AlwaysBreakTemplateDeclarations: Yes
