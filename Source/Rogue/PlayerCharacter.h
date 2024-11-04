@@ -109,7 +109,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     // APawn interface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
-    virtual void BeginPlay();
+    virtual void BeginPlay() override;
     virtual bool CanJumpInternal_Implementation() const override;
 
   private:
