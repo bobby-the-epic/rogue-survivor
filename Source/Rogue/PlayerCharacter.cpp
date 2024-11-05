@@ -5,6 +5,7 @@
 #include "PlayerCharacter.h"
 #include "ArrowProjectile.h"
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
@@ -59,8 +60,16 @@ APlayerCharacter::APlayerCharacter()
 
     // Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character)
     // are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
     ZoomedOutFOV = FollowCamera->FieldOfView;
     ZoomedInFOV = ZoomedOutFOV - 30;
+
+    LeftArrowPos = CreateDefaultSubobject<UArrowComponent>("LeftArrowPos");
+    LeftArrowPos->SetupAttachment(RootComponent);
+    MiddleArrowPos = CreateDefaultSubobject<UArrowComponent>("MiddleArrowPos");
+    MiddleArrowPos->SetupAttachment(RootComponent);
+    RightArrowPos = CreateDefaultSubobject<UArrowComponent>("RightArrowPos");
+    RightArrowPos->SetupAttachment(RootComponent);
 }
 void APlayerCharacter::BeginPlay()
 {
@@ -228,10 +237,10 @@ void APlayerCharacter::FireArrow()
     FVector CameraLocation;
     FRotator CameraRotation;
     FVector LaunchDirection;
+    FVector MiddleArrowLocation = MiddleArrowPos->GetComponentLocation();
+    FRotator MiddleArrowRotation = MiddleArrowPos->GetComponentRotation();
     GetActorEyesViewPoint(CameraLocation, CameraRotation);
     CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
-    FVector CrossbowLocation = GetMesh()->GetBoneLocation("2H_Crossbow");
-    FRotator CrossbowRotation = GetMesh()->GetBoneTransform("2H_Crossbow").Rotator();
 
     // Line trace
     FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
@@ -240,44 +249,38 @@ void APlayerCharacter::FireArrow()
     GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
     if (HitResult.bBlockingHit)
     {
-        LaunchDirection = (HitResult.ImpactPoint - CrossbowLocation).GetSafeNormal();
+        LaunchDirection = (HitResult.ImpactPoint - MiddleArrowLocation).GetSafeNormal();
     }
     else
     {
-        LaunchDirection = (TraceEnd - CrossbowLocation).GetSafeNormal();
+        LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
     }
-    // Spawn the arrow and fire it in the launch direction
-    AArrowProjectile* Arrow;
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
     if (!bFullAutoFire)
     {
         PlaceholderArrow->SetActorHiddenInGame(true);
     }
-    Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, CrossbowLocation, CrossbowRotation, SpawnParams);
+    // Spawn the arrow and fire it in the launch direction
+    AArrowProjectile* Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, MiddleArrowLocation,
+                                                                       MiddleArrowRotation, SpawnParams);
     Arrow->FireInDirection(LaunchDirection);
     if (bMultishotEnabled)
     {
-        /*
-            Gets the Crossbow right vector by cross product of the launch direction
-            (which is the direction the crosshair is facing) and the world space up
-            vector (Z axis). The location and launch direction of the two extra arrows
-            is then calculated.
-        */
-        FVector CrossbowRightVector = FVector::CrossProduct(LaunchDirection, FVector::UpVector).GetSafeNormal();
-        FVector LeftSpawnLocation = CrossbowLocation + (CrossbowRightVector * 30.f);
-        FVector RightSpawnLocation = CrossbowLocation - (CrossbowRightVector * 30.f);
+        // Spawns the arrows with the arrow components' locations and rotations
+        FVector LeftArrowLocation = LeftArrowPos->GetComponentLocation();
+        FVector RightArrowLocation = RightArrowPos->GetComponentLocation();
+        FRotator LeftArrowRotation = LeftArrowPos->GetComponentRotation();
+        FRotator RightArrowRotation = RightArrowPos->GetComponentRotation();
+        // Just rotates the launch direction a little so they fire in different directions
         FVector LeftDirection = LaunchDirection.RotateAngleAxis(-25, FVector::UpVector);
         FVector RightDirection = LaunchDirection.RotateAngleAxis(25, FVector::UpVector);
-        AArrowProjectile* LeftArrow =
-            GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, LeftSpawnLocation, CrossbowRotation, SpawnParams);
-        AArrowProjectile* RightArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, RightSpawnLocation,
-                                                                                CrossbowRotation, SpawnParams);
+        AArrowProjectile* LeftArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, LeftArrowLocation,
+                                                                               LeftArrowRotation, SpawnParams);
+        AArrowProjectile* RightArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, RightArrowLocation,
+                                                                                RightArrowRotation, SpawnParams);
         LeftArrow->FireInDirection(LeftDirection);
         RightArrow->FireInDirection(RightDirection);
-        // Rename the arrows in the editor for debugging
-        LeftArrow->SetActorLabel("Left Arrow");
-        RightArrow->SetActorLabel("Right Arrow");
     }
 }
 void APlayerCharacter::ReloadArrow()
@@ -287,6 +290,7 @@ void APlayerCharacter::ReloadArrow()
 void APlayerCharacter::StopFiring()
 {
     bUseWeapon = false;
+    bWeaponReady = true;
     if (bFullAutoFire && !bIsAiming)
     {
         RotateCharacter();

@@ -13,6 +13,7 @@ class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
 class AArrowProjectile;
+class UArrowComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -65,6 +66,15 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY()
     AArrowProjectile* PlaceholderArrow;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    UArrowComponent* LeftArrowPos;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    UArrowComponent* MiddleArrowPos;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    UArrowComponent* RightArrowPos;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
