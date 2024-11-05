@@ -2,7 +2,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "EnemyHealthBar.h"
-#include "Kismet/GameplayStatics.h"
+#include "EventBus.h"
 #include "PlayerCharacter.h"
 
 ASkeletonWarrior::ASkeletonWarrior()
@@ -22,24 +22,13 @@ ASkeletonWarrior::ASkeletonWarrior()
 void ASkeletonWarrior::BeginPlay()
 {
     Super::BeginPlay();
-    // If there is a player in the game, add UpdateHealthBarRotation to the delegate
-    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (PlayerCharacter)
-    {
-        Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
-            ->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-    }
+    UEventBus::Get()->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetWidget());
 }
 void ASkeletonWarrior::BeginDestroy()
 {
     // Remove the function from the delegate when destroyed
-    APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    if (PlayerCharacter)
-    {
-        Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
-            ->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-    }
+    UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     Super::BeginDestroy();
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)

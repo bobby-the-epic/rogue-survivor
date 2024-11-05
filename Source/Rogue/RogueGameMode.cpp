@@ -1,6 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "RogueGameMode.h"
+#include "EventBus.h"
 #include "PlayerCharacter.h"
 #include "PlayerHUD.h"
 #include "UObject/ConstructorHelpers.h"

@@ -18,16 +18,10 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
-UDELEGATE()
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerMovedSignature, FVector, Location);
-
 UCLASS(config = Game)
 class APlayerCharacter : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
-
-  public:
-    FOnPlayerMovedSignature OnPlayerMovedDelegate;
 
   private:
     float ZoomedInFOV;

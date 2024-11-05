@@ -13,6 +13,7 @@
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "EventBus.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -101,7 +102,7 @@ void APlayerCharacter::BeginPlay()
 }
 void APlayerCharacter::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
-    OnPlayerMovedDelegate.Clear();
+    UEventBus::Get()->OnPlayerMovedDelegate.Clear();
     Super::EndPlay(EndPlayReason);
 }
 //////////////////////////////////////////////////////////////////////////
@@ -167,7 +168,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
         AddMovementInput(ForwardDirection, MovementVector.Y);
         AddMovementInput(RightDirection, MovementVector.X);
 
-        OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
+        UEventBus::Get()->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::Look(const FInputActionValue& Value)
@@ -181,7 +182,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
 
-        OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
+        UEventBus::Get()->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::ZoomIn()
