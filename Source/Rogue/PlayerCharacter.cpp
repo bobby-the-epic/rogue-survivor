@@ -3,6 +3,7 @@
 // This class is based on the default third person template
 
 #include "PlayerCharacter.h"
+#include "ArrowProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -89,6 +90,11 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->SetActorEnableCollision(false);
     PlaceholderArrow->SetLifeSpan(0);
 }
+void APlayerCharacter::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+    OnPlayerMovedDelegate.Clear();
+    Super::EndPlay(EndPlayReason);
+}
 //////////////////////////////////////////////////////////////////////////
 // Input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -151,6 +157,8 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
         // add movement
         AddMovementInput(ForwardDirection, MovementVector.Y);
         AddMovementInput(RightDirection, MovementVector.X);
+
+        OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::Look(const FInputActionValue& Value)
@@ -163,6 +171,8 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
         // add yaw and pitch input to controller
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
+
+        OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::ZoomIn()
@@ -299,7 +309,7 @@ void APlayerCharacter::RotateCharacter()
 }
 void APlayerCharacter::TakeDamage(int32 Damage)
 {
-    Health -= Damage;
+    CurrentHealth -= Damage;
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {

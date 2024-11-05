@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "ArrowProjectile.h"
 #include "CombatInterface.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
@@ -13,21 +12,32 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class AArrowProjectile;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+UDELEGATE()
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerMovedSignature, FVector, Location);
 
 UCLASS(config = Game)
 class APlayerCharacter : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
 
+  public:
+    FOnPlayerMovedSignature OnPlayerMovedDelegate;
+
+  private:
     float ZoomedInFOV;
     float ZoomedOutFOV;
     float ElapsedTime = 0;
 
     UPROPERTY(VisibleAnywhere)
-    int32 Health = 100;
+    float CurrentHealth = 100;
+
+    UPROPERTY(VisibleAnywhere)
+    float MaxHealth = 100;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
@@ -110,6 +120,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay() override;
+    virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
     virtual bool CanJumpInternal_Implementation() const override;
 
   private:
