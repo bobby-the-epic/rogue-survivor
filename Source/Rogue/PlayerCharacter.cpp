@@ -100,11 +100,6 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->SetActorEnableCollision(false);
     PlaceholderArrow->SetLifeSpan(0);
 }
-void APlayerCharacter::EndPlay(EEndPlayReason::Type EndPlayReason)
-{
-    UEventBus::Get()->OnPlayerMovedDelegate.Clear();
-    Super::EndPlay(EndPlayReason);
-}
 //////////////////////////////////////////////////////////////////////////
 // Input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

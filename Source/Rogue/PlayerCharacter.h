@@ -124,7 +124,6 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay() override;
-    virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
     virtual bool CanJumpInternal_Implementation() const override;
 
   private:
