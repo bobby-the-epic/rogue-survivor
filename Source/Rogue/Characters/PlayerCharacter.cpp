@@ -3,7 +3,6 @@
 // This class is based on the default third person template
 
 #include "PlayerCharacter.h"
-#include "ArrowProjectile.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -13,11 +12,12 @@
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "EventBus.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "Rogue/Gameplay/ArrowProjectile.h"
+#include "Rogue/Gameplay/EventBus.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 

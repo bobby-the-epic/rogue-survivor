@@ -2,8 +2,8 @@
 
 #include "RogueGameMode.h"
 #include "EventBus.h"
-#include "PlayerCharacter.h"
-#include "PlayerHUD.h"
+#include "Rogue/Characters/PlayerCharacter.h"
+#include "Rogue/UI/PlayerHUD.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARogueGameMode::ARogueGameMode()

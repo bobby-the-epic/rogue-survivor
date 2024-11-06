@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include "CombatInterface.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Rogue/Gameplay/CombatInterface.h"
 #include "Logging/LogMacros.h"
 #include "PlayerCharacter.generated.h"
 

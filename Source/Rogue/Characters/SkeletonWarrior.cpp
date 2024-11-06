@@ -1,9 +1,9 @@
 #include "SkeletonWarrior.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
-#include "EnemyHealthBar.h"
-#include "EventBus.h"
 #include "PlayerCharacter.h"
+#include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/UI/EnemyHealthBar.h"
 
 ASkeletonWarrior::ASkeletonWarrior()
 {

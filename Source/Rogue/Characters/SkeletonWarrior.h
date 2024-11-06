@@ -1,8 +1,8 @@
 #pragma once
 
-#include "CombatInterface.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Rogue/Gameplay/CombatInterface.h"
 #include "SkeletonWarrior.generated.h"
 
 class UWidgetComponent;
