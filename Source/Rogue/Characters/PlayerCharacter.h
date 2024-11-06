@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Rogue/Gameplay/CombatInterface.h"
 #include "Logging/LogMacros.h"
+#include "Rogue/Gameplay/CombatInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -14,6 +14,7 @@ class UInputMappingContext;
 class UInputAction;
 class AArrowProjectile;
 class UArrowComponent;
+class UPlayerHUD;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -70,6 +71,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleDefaultsOnly)
     UArrowComponent* RightArrowPos;
 
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UPlayerHUD> PlayerHUDClass;
+
+    UPROPERTY()
+    UPlayerHUD* PlayerHUD;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
@@ -124,6 +131,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
     // To add mapping context
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
     virtual bool CanJumpInternal_Implementation() const override;
 
   private:

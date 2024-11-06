@@ -18,6 +18,7 @@
 #include "InputActionValue.h"
 #include "Rogue/Gameplay/ArrowProjectile.h"
 #include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/UI/PlayerHUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -99,6 +100,22 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->ProjectileMovementComponent->DestroyComponent();
     PlaceholderArrow->SetActorEnableCollision(false);
     PlaceholderArrow->SetLifeSpan(0);
+
+    if (PlayerHUDClass)
+    {
+        PlayerHUD = CreateWidget<UPlayerHUD>(Cast<APlayerController>(GetController()), PlayerHUDClass);
+        PlayerHUD->AddToPlayerScreen();
+    }
+}
+void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    if (PlayerHUD)
+    {
+        PlayerHUD->RemoveFromParent();
+        PlayerHUD = nullptr;
+    }
+
+    Super::EndPlay(EndPlayReason);
 }
 //////////////////////////////////////////////////////////////////////////
 // Input

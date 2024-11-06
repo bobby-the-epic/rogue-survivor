@@ -10,13 +10,8 @@ ARogueGameMode::ARogueGameMode()
 {
     // set default pawn class to our Blueprinted character
     static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Blueprints/PlayerCharacter_BP"));
-    static ConstructorHelpers::FClassFinder<AHUD> PlayerHUDBPClass(TEXT("/Game/Blueprints/PlayerHUD_BP"));
     if (PlayerPawnBPClass.Class != NULL)
     {
         DefaultPawnClass = PlayerPawnBPClass.Class;
-    }
-    if (PlayerHUDBPClass.Class != NULL)
-    {
-        HUDClass = PlayerHUDBPClass.Class;
     }
 }

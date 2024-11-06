@@ -1,22 +1,20 @@
 #pragma once
 
+#include "Blueprint/UserWidget.h"
 #include "CoreMinimal.h"
-#include "Engine/Canvas.h"
-#include "GameFramework/HUD.h"
 #include "PlayerHUD.generated.h"
 
-/**
- *
- */
+class UProgressBar;
+class UImage;
+
 UCLASS()
-class ROGUE_API APlayerHUD : public AHUD
+class ROGUE_API UPlayerHUD : public UUserWidget
 {
     GENERATED_BODY()
 
-  protected:
-    UPROPERTY(EditDefaultsOnly)
-    UTexture2D* CrosshairTexture;
+    UPROPERTY(meta = (BindWidget))
+    UImage* Crosshair;
 
-  public:
-    virtual void DrawHUD() override;
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* HealthBar;
 };
