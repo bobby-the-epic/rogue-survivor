@@ -27,12 +27,21 @@ void ASkeletonWarrior::BeginPlay()
 }
 void ASkeletonWarrior::BeginDestroy()
 {
-    // Remove the function from the delegate when destroyed
-    UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    // Remove the function from the delegate when destroyed and not dead
+    if (!IsDead)
+    {
+        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    }
     Super::BeginDestroy();
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
 {
+    if (IsDead)
+    {
+        // TakeDamage shouldn't be called when the actor is dead because collision
+        // is disabled on death, but I left this here just in case.
+        return;
+    }
     // Subtracts damage from current health and updates the health bar
     if (!HealthBarWidgetComponent->IsVisible())
     {
@@ -41,7 +50,15 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
     CurrentHealth -= Damage;
     if (CurrentHealth <= 0)
     {
-        Destroy();
+        IsDead = true;
+        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        HealthBarWidgetComponent->DestroyComponent();
+        SetActorEnableCollision(false);
+        // Sets a timer to destroy the actor so the body lingers for a few seconds.
+        FTimerHandle TimerHandle;
+        GetController()->Destroy();
+        GetWorldTimerManager().SetTimer(TimerHandle, [this] { Destroy(); }, 5.0f, false);
+        return;
     }
     HealthBarWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
     // For debugging

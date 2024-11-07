@@ -19,6 +19,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere)
     float MaxHealth = 100;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool IsDead = false;
+
     UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* WeaponMesh;
 
