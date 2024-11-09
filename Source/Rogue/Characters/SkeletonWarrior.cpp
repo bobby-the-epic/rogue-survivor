@@ -29,6 +29,15 @@ void ASkeletonWarrior::BeginPlay()
     if (SpawnMontage)
     {
         PlayAnimMontage(SpawnMontage);
+        FTimerHandle TimerHandle;
+        /*
+            The default mesh location is below the ground.
+            This sets a timer to move the mesh up.
+            Otherwise, the animation will flicker from the state machine to the montage.
+            This workaround hides the flickering.
+        */
+        GetWorldTimerManager().SetTimer(
+            TimerHandle, [this] { GetMesh()->SetRelativeLocation(FVector(0, 0, -65.0f)); }, 0.2f, false);
         GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
     }
 }
@@ -36,7 +45,6 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
     // when the spawn animation is done playing.
-    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Hello"));
     AAIController* AIController = Cast<AAIController>(GetController());
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     AIController->RunBehaviorTree(BehaviorTree);
