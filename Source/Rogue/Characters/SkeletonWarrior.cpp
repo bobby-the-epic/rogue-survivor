@@ -99,3 +99,13 @@ void ASkeletonWarrior::UpdateHealthBarRotation(FVector CameraLocation)
     HealthBarWidgetComponent->SetWorldRotation(
         (CameraLocation - HealthBarWidgetComponent->GetComponentLocation()).Rotation());
 }
+void ASkeletonWarrior::Attack() const
+{
+    // Checks if the player is overlapping the weapon collider.
+    // If they are, then the player takes damage.
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    if (WeaponCollider->IsOverlappingActor(Player))
+    {
+        Cast<ICombatInterface>(Player)->TakeDamage(5);
+    }
+}

@@ -58,4 +58,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
     UFUNCTION()
     void EndSpawning(UAnimMontage* Montage, bool bInterrupted);
+
+    UFUNCTION(BlueprintCallable)
+    void Attack() const;
 };
