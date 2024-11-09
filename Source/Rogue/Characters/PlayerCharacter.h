@@ -56,7 +56,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
 
-    UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(EditAnywhere)
     FVector ArrowOffset;
 
     UPROPERTY()

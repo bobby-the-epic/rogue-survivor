@@ -15,7 +15,7 @@ class ROGUE_API AArrowProjectile : public AActor
     UProjectileMovementComponent* ProjectileMovementComponent;
 
   private:
-    UPROPERTY(VisibleDefaultsOnly, meta = (AllowPrivateAccess = "true"))
+    UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* ArrowMesh;
 
     UPROPERTY(VisibleAnywhere)
