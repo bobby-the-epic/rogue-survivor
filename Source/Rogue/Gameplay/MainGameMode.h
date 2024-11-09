@@ -16,5 +16,6 @@ class AMainGameMode : public AGameModeBase
     virtual void BeginPlay() override;
 
   private:
+    UFUNCTION()
     void SpawnSkeleton() const;
 };
