@@ -12,10 +12,17 @@ class AMainGameMode : public AGameModeBase
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class ASkeletonWarrior> SkeletonClass;
 
+    UPROPERTY()
+    FTimerHandle SpawnTimerHandle;
+
   protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
   private:
     UFUNCTION()
     void SpawnSkeleton() const;
+
+    UFUNCTION()
+    void StopSpawningSkeletons();
 };

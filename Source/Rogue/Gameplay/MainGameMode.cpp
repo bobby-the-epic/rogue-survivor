@@ -1,4 +1,5 @@
 #include "MainGameMode.h"
+#include "EventBus.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
@@ -7,8 +8,12 @@ void AMainGameMode::BeginPlay()
 {
     Super::BeginPlay();
 
-    FTimerHandle TimerHandle;
-    GetWorldTimerManager().SetTimer(TimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
+    GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
+    UEventBus::Get()->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+}
+void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
 }
 void AMainGameMode::SpawnSkeleton() const
 {
@@ -20,4 +25,8 @@ void AMainGameMode::SpawnSkeleton() const
     FRotator SpawnRotation = (PlayerLocation - RandomPoint).GetSafeNormal().Rotation();
     ASkeletonWarrior* Skeleton =
         GetWorld()->SpawnActor<ASkeletonWarrior>(SkeletonClass, RandomPoint, SpawnRotation, SpawnParams);
+}
+void AMainGameMode::StopSpawningSkeletons()
+{
+    GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
 }
