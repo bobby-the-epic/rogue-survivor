@@ -14,6 +14,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
 
+    UPROPERTY()
+    int32 WeaponDamage = 5;
+
     UPROPERTY(VisibleAnywhere)
     float CurrentHealth = 100;
 

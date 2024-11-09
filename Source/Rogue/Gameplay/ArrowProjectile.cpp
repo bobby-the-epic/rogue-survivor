@@ -35,7 +35,7 @@ void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
         ICombatInterface* HitActor = Cast<ICombatInterface>(OtherActor);
         if (HitActor != nullptr)
         {
-            HitActor->TakeDamage(5);
+            HitActor->TakeDamage(WeaponDamage);
         }
     }
 }

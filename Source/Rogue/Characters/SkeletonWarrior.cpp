@@ -112,7 +112,7 @@ void ASkeletonWarrior::Attack() const
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (WeaponCollider->IsOverlappingActor(Player))
     {
-        Cast<ICombatInterface>(Player)->TakeDamage(5);
+        Cast<ICombatInterface>(Player)->TakeDamage(WeaponDamage);
     }
 }
 void ASkeletonWarrior::Celebrate()
