@@ -1,7 +1,9 @@
 #include "SkeletonWarrior.h"
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
-#include "PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/UI/EnemyHealthBar.h"
 
@@ -24,6 +26,22 @@ void ASkeletonWarrior::BeginPlay()
     Super::BeginPlay();
     UEventBus::Get()->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetWidget());
+    if (SpawnMontage)
+    {
+        PlayAnimMontage(SpawnMontage);
+        GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
+    }
+}
+void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
+{
+    // Run the behavior tree and set the player blackboard key
+    // when the spawn animation is done playing.
+    GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Hello"));
+    AAIController* AIController = Cast<AAIController>(GetController());
+    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    AIController->RunBehaviorTree(BehaviorTree);
+    AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
+    GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
 }
 void ASkeletonWarrior::BeginDestroy()
 {

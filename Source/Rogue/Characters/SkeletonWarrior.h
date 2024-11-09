@@ -7,6 +7,7 @@
 
 class UWidgetComponent;
 class UEnemyHealthBar;
+class UBehaviorTree;
 
 UCLASS()
 class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
@@ -37,6 +38,12 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY()
     UEnemyHealthBar* HealthBarWidget;
 
+    UPROPERTY(EditDefaultsOnly, Category = Animation)
+    UAnimMontage* SpawnMontage;
+
+    UPROPERTY(EditDefaultsOnly)
+    UBehaviorTree* BehaviorTree;
+
   public:
     ASkeletonWarrior();
     virtual void TakeDamage(int32 Damage) override;
@@ -48,4 +55,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
   private:
     UFUNCTION()
     void UpdateHealthBarRotation(FVector CameraLocation);
+
+    UFUNCTION()
+    void EndSpawning(UAnimMontage* Montage, bool bInterrupted);
 };
