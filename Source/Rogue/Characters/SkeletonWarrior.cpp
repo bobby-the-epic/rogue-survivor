@@ -26,6 +26,7 @@ void ASkeletonWarrior::BeginPlay()
 {
     Super::BeginPlay();
     UEventBus::Get()->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    UEventBus::Get()->OnPlayerDeathDelegate.AddDynamic(this, &ASkeletonWarrior::Celebrate);
     HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetWidget());
     if (SpawnMontage)
     {
@@ -46,10 +47,13 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
     // when the spawn animation is done playing.
-    AAIController* AIController = Cast<AAIController>(GetController());
-    ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
-    AIController->RunBehaviorTree(BehaviorTree);
-    AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
+    if (!IsPlayerDead)
+    {
+        AAIController* AIController = Cast<AAIController>(GetController());
+        ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+        AIController->RunBehaviorTree(BehaviorTree);
+        AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
+    }
     GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
 }
 void ASkeletonWarrior::BeginDestroy()
@@ -59,6 +63,7 @@ void ASkeletonWarrior::BeginDestroy()
     {
         UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     }
+    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
     Super::BeginDestroy();
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
@@ -109,4 +114,9 @@ void ASkeletonWarrior::Attack() const
     {
         Cast<ICombatInterface>(Player)->TakeDamage(5);
     }
+}
+void ASkeletonWarrior::Celebrate()
+{
+    IsPlayerDead = true;
+    GetController()->Destroy();
 }

@@ -23,6 +23,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsDead = false;
 
+    UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool IsPlayerDead = false;
+
     UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* WeaponMesh;
 
@@ -61,4 +64,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
     UFUNCTION(BlueprintCallable)
     void Attack() const;
+
+    UFUNCTION()
+    void Celebrate();
 };

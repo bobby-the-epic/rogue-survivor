@@ -335,6 +335,7 @@ void APlayerCharacter::TakeDamage(int32 Damage)
     if (CurrentHealth <= 0)
     {
         bIsDead = true;
+        UEventBus::Get()->OnPlayerDeathDelegate.Broadcast();
     }
     PlayerHUD->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 }
