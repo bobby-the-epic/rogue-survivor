@@ -14,6 +14,7 @@ void AMainGameMode::BeginPlay()
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    Super::EndPlay(EndPlayReason);
 }
 void AMainGameMode::SpawnSkeleton() const
 {
