@@ -12,9 +12,11 @@ class ROGUE_API UPlayerHUD : public UUserWidget
 {
     GENERATED_BODY()
 
-    UPROPERTY(meta = (BindWidget))
-    UImage* Crosshair;
-
+  public:
     UPROPERTY(meta = (BindWidget))
     UProgressBar* HealthBar;
+
+  private:
+    UPROPERTY(meta = (BindWidget))
+    UImage* Crosshair;
 };

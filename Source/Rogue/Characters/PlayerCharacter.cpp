@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/ProgressBar.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "CoreMinimal.h"
 #include "Engine/EngineTypes.h"
@@ -326,7 +327,16 @@ void APlayerCharacter::RotateCharacter()
 }
 void APlayerCharacter::TakeDamage(int32 Damage)
 {
+    if (bIsDead)
+    {
+        return;
+    }
     CurrentHealth -= Damage;
+    if (CurrentHealth <= 0)
+    {
+        bIsDead = true;
+    }
+    PlayerHUD->HealthBar->SetPercent(CurrentHealth / MaxHealth);
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {
