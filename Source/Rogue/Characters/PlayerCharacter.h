@@ -132,7 +132,6 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     // To add mapping context
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-    virtual bool CanJumpInternal_Implementation() const override;
 
   private:
     void ZoomIn();

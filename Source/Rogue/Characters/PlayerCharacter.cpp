@@ -165,7 +165,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
     // input is a Vector2D
     FVector2D MovementVector = Value.Get<FVector2D>();
 
-    if (Controller != nullptr && !bIsDead)
+    if (Controller != nullptr)
     {
         // find out which way is forward
         const FRotator Rotation = Controller->GetControlRotation();
@@ -200,24 +200,18 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 }
 void APlayerCharacter::ZoomIn()
 {
-    if (!bIsDead)
-    {
-        GetCharacterMovement()->bOrientRotationToMovement = false;
-        GetCharacterMovement()->bUseControllerDesiredRotation = true;
-        bIsAiming = true;
-        SetCameraFOV();
-    }
+    GetCharacterMovement()->bOrientRotationToMovement = false;
+    GetCharacterMovement()->bUseControllerDesiredRotation = true;
+    bIsAiming = true;
+    SetCameraFOV();
 }
 void APlayerCharacter::ZoomOut()
 {
-    if (!bIsDead)
-    {
-        ElapsedTime = 0;
-        GetCharacterMovement()->bOrientRotationToMovement = true;
-        GetCharacterMovement()->bUseControllerDesiredRotation = false;
-        bIsAiming = false;
-        SetCameraFOV();
-    }
+    ElapsedTime = 0;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    bIsAiming = false;
+    SetCameraFOV();
 }
 void APlayerCharacter::SetCameraFOV()
 {
@@ -234,7 +228,7 @@ void APlayerCharacter::SetCameraFOV()
 }
 void APlayerCharacter::Attack()
 {
-    if (!bIsDead && bWeaponReady)
+    if (bWeaponReady)
     {
         bUseWeapon = true;
         bWeaponReady = false;
@@ -356,10 +350,4 @@ void APlayerCharacter::StartDeathState()
     DeathCam->SetActorRotation(DeathCamRotation);
     Cast<APlayerController>(GetController())
         ->SetViewTargetWithBlend(DeathCam, 6.0f, EViewTargetBlendFunction::VTBlend_EaseOut, 3.0f);
-}
-bool APlayerCharacter::CanJumpInternal_Implementation() const
-{
-    if (bIsDead)
-        return false;
-    return Super::CanJumpInternal_Implementation();
 }
