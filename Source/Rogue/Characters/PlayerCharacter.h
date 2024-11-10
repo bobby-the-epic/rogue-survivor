@@ -141,4 +141,5 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void Attack();
     void RotateCharacter();
     void StopFiring();
+    void StartDeathState();
 };

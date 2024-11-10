@@ -332,12 +332,30 @@ void APlayerCharacter::TakeDamage(int32 Damage)
         return;
     }
     CurrentHealth -= Damage;
+    PlayerHUD->HealthBar->SetPercent(CurrentHealth / MaxHealth);
     if (CurrentHealth <= 0)
     {
-        bIsDead = true;
-        UEventBus::Get()->OnPlayerDeathDelegate.Broadcast();
+        StartDeathState();
     }
-    PlayerHUD->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+}
+void APlayerCharacter::StartDeathState()
+{
+    bIsDead = true;
+    UEventBus::Get()->OnPlayerDeathDelegate.Broadcast();
+    DisableInput(Cast<APlayerController>(GetController()));
+    //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
+    //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.
+    FVector DeathCamLocation = FVector(175, 60, 200) + FollowCamera->GetComponentLocation();
+    DeathCamLocation = GetMesh()->GetComponentLocation() + FVector(0, 0, 400);
+    FRotator DeathCamRotation = FRotator(-90, 0, 0);
+    AActor* DeathCam = GetWorld()->SpawnActor<AActor>(AActor::StaticClass());
+    UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(DeathCam);
+    DeathCam->SetRootComponent(StaticMeshComponent);
+    StaticMeshComponent->RegisterComponent();
+    DeathCam->SetActorLocation(DeathCamLocation);
+    DeathCam->SetActorRotation(DeathCamRotation);
+    Cast<APlayerController>(GetController())
+        ->SetViewTargetWithBlend(DeathCam, 6.0f, EViewTargetBlendFunction::VTBlend_EaseOut, 3.0f);
 }
 bool APlayerCharacter::CanJumpInternal_Implementation() const
 {
