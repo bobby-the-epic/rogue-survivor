@@ -23,6 +23,7 @@ class ROGUE_API AArrowProjectile : public AActor
 
   public:
     AArrowProjectile();
+    UFUNCTION(BlueprintCallable)
     void FireInDirection(const FVector& ShootDirection);
 
     UFUNCTION()
