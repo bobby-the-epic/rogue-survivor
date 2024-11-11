@@ -2,12 +2,11 @@
 
 UEventBus* UEventBus::Instance = nullptr;
 
+UEventBus::UEventBus()
+{
+    Instance = this;
+}
 UEventBus* UEventBus::Get()
 {
-    if (!Instance)
-    {
-        Instance = NewObject<UEventBus>();
-        Instance->AddToRoot();
-    }
     return Instance;
 }

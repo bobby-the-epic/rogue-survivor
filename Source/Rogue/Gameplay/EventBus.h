@@ -14,6 +14,7 @@ class ROGUE_API UEventBus : public UObject
     DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerDeathSignature);
 
   public:
+    UEventBus();
     static UEventBus* Get();
     FOnPlayerMovedSignature OnPlayerMovedDelegate;
     FOnPlayerDeathSignature OnPlayerDeathDelegate;

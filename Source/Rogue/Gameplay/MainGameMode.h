@@ -4,6 +4,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "MainGameMode.generated.h"
 
+class UEventBus;
+
 UCLASS(minimalapi)
 class AMainGameMode : public AGameModeBase
 {
@@ -14,6 +16,9 @@ class AMainGameMode : public AGameModeBase
 
     UPROPERTY()
     FTimerHandle SpawnTimerHandle;
+
+    UPROPERTY()
+    UEventBus* EventBus;
 
   protected:
     virtual void BeginPlay() override;

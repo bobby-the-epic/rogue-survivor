@@ -58,12 +58,15 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 }
 void ASkeletonWarrior::BeginDestroy()
 {
-    // Remove the function from the delegate when destroyed and not dead
-    if (!IsDead)
+    if (UEventBus::Get())
     {
-        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        // Remove the function from the delegate when destroyed and not dead
+        if (!IsDead)
+        {
+            UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        }
+        UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
     }
-    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
     Super::BeginDestroy();
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
