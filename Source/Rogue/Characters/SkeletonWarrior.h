@@ -8,6 +8,7 @@
 class UWidgetComponent;
 class UEnemyHealthBar;
 class UBehaviorTree;
+class AExperienceOrb;
 
 UCLASS()
 class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
@@ -49,6 +50,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
     UPROPERTY(EditDefaultsOnly)
     UBehaviorTree* BehaviorTree;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AExperienceOrb> ExperienceOrbBP;
 
   public:
     ASkeletonWarrior();

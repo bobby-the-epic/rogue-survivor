@@ -6,6 +6,7 @@
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/Gameplay/ExperienceOrb.h"
 #include "Rogue/UI/EnemyHealthBar.h"
 
 ASkeletonWarrior::ASkeletonWarrior()
@@ -91,6 +92,9 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         FTimerHandle TimerHandle;
         GetController()->Destroy();
         GetWorldTimerManager().SetTimer(TimerHandle, [this] { Destroy(); }, 5.0f, false);
+        FVector SpawnLocation = GetActorLocation();
+        SpawnLocation.Z = 0;
+        GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
         return;
     }
     HealthBarWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
