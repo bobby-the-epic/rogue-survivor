@@ -98,10 +98,6 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         return;
     }
     HealthBarWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
-    // For debugging
-    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red,
-                                     FString::Printf(TEXT("%f"), HealthBarWidget->HealthBar->GetPercent()));
-    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("%f"), CurrentHealth));
 }
 void ASkeletonWarrior::UpdateHealthBarRotation(FVector CameraLocation)
 {

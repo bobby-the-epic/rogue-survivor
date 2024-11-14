@@ -28,7 +28,6 @@ void AArrowProjectile::FireInDirection(const FVector& ShootDirection)
 void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
                              FVector NormalImpulse, const FHitResult& Hit)
 {
-    GEngine->AddOnScreenDebugMessage(-1, 1, FColor::White, TEXT("Hit"));
     if (OtherActor->IsA<APawn>())
     {
         Destroy();
