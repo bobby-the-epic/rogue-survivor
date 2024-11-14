@@ -56,7 +56,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
   protected:
     virtual void BeginPlay() override;
-    virtual void BeginDestroy() override;
+    virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
   private:
     UFUNCTION()

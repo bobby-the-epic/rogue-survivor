@@ -43,6 +43,17 @@ void ASkeletonWarrior::BeginPlay()
         GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
     }
 }
+void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+    // Remove the function from the delegate when destroyed and not dead
+    if (!IsDead)
+    {
+        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    }
+    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
+
+    Super::EndPlay(EndPlayReason);
+}
 void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
@@ -55,19 +66,6 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
         AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
     }
     GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
-}
-void ASkeletonWarrior::BeginDestroy()
-{
-    if (UEventBus::Get())
-    {
-        // Remove the function from the delegate when destroyed and not dead
-        if (!IsDead)
-        {
-            UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-        }
-        UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
-    }
-    Super::BeginDestroy();
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
 {
