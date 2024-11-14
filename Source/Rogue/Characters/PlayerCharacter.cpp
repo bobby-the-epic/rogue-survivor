@@ -117,6 +117,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PlayerHUD->RemoveFromParent();
         PlayerHUD = nullptr;
     }
+    UEventBus::Get()->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
 
     Super::EndPlay(EndPlayReason);
 }
