@@ -107,6 +107,8 @@ void APlayerCharacter::BeginPlay()
         PlayerHUD = CreateWidget<UPlayerHUD>(Cast<APlayerController>(GetController()), PlayerHUDClass);
         PlayerHUD->AddToPlayerScreen();
     }
+
+    UEventBus::Get()->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -350,4 +352,14 @@ void APlayerCharacter::StartDeathState()
     DeathCam->SetActorRotation(DeathCamRotation);
     Cast<APlayerController>(GetController())
         ->SetViewTargetWithBlend(DeathCam, 6.0f, EViewTargetBlendFunction::VTBlend_EaseOut, 3.0f);
+}
+void APlayerCharacter::AddExperience()
+{
+    CurrentExperience += 100;
+    if (CurrentExperience >= MaxExperience)
+    {
+        Level++;
+        CurrentExperience = 0;
+        MaxExperience += 100;
+    }
 }

@@ -35,6 +35,15 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere)
     float MaxHealth = 100;
 
+    UPROPERTY(VisibleAnywhere)
+    int32 CurrentExperience = 0;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 MaxExperience = 1000;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 Level = 1;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
 
@@ -141,4 +150,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void RotateCharacter();
     void StopFiring();
     void StartDeathState();
+
+    UFUNCTION()
+    void AddExperience();
 };
