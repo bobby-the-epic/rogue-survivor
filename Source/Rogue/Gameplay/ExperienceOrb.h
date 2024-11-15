@@ -6,11 +6,15 @@
 
 class UNiagaraComponent;
 class USphereComponent;
+class UEventBus;
 
 UCLASS()
 class ROGUE_API AExperienceOrb : public AActor
 {
     GENERATED_BODY()
+
+    UPROPERTY()
+    UEventBus* EventBus;
 
     UPROPERTY(VisibleDefaultsOnly)
     USceneComponent* SceneTransform;

@@ -1,8 +1,10 @@
 #include "Rogue/Gameplay/ExperienceOrb.h"
 #include "Components/SphereComponent.h"
 #include "EventBus.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "Rogue/Characters/PlayerCharacter.h"
+#include "Rogue/Gameplay/MainGameMode.h"
 
 AExperienceOrb::AExperienceOrb()
 {
@@ -18,6 +20,7 @@ void AExperienceOrb::BeginPlay()
 {
     Super::BeginPlay();
 
+    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     SphereCollider->OnComponentBeginOverlap.AddDynamic(this, &AExperienceOrb::CollectExperience);
 }
 void AExperienceOrb::EndPlay(EEndPlayReason::Type EndPlayReason)
@@ -44,7 +47,7 @@ void AExperienceOrb::CollectExperience(UPrimitiveComponent* OverlappedComponent,
     }
     else
     {
-        UEventBus::Get()->OnCollectiblePickupDelegate.Broadcast();
+        EventBus->OnCollectiblePickupDelegate.Broadcast();
         Destroy();
     }
 }

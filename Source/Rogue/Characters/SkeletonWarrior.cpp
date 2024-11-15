@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/ExperienceOrb.h"
+#include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/EnemyHealthBar.h"
 
 ASkeletonWarrior::ASkeletonWarrior()
@@ -26,8 +27,10 @@ ASkeletonWarrior::ASkeletonWarrior()
 void ASkeletonWarrior::BeginPlay()
 {
     Super::BeginPlay();
-    UEventBus::Get()->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-    UEventBus::Get()->OnPlayerDeathDelegate.AddDynamic(this, &ASkeletonWarrior::Celebrate);
+
+    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
+    EventBus->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    EventBus->OnPlayerDeathDelegate.AddDynamic(this, &ASkeletonWarrior::Celebrate);
     HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetWidget());
     if (SpawnMontage)
     {
@@ -49,9 +52,9 @@ void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
     // Remove the function from the delegate when destroyed and not dead
     if (!IsDead)
     {
-        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     }
-    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
+    EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -85,7 +88,7 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
     if (CurrentHealth <= 0)
     {
         IsDead = true;
-        UEventBus::Get()->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
         HealthBarWidgetComponent->DestroyComponent();
         SetActorEnableCollision(false);
         // Sets a timer to destroy the actor so the body lingers for a few seconds.

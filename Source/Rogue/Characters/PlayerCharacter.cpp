@@ -18,8 +18,10 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/ArrowProjectile.h"
 #include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/PlayerHUD.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
@@ -112,7 +114,8 @@ void APlayerCharacter::BeginPlay()
         PlayerHUD->AddToPlayerScreen();
     }
 
-    UEventBus::Get()->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
+    EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -121,7 +124,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PlayerHUD->RemoveFromParent();
         PlayerHUD = nullptr;
     }
-    UEventBus::Get()->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -188,7 +191,7 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
         AddMovementInput(ForwardDirection, MovementVector.Y);
         AddMovementInput(RightDirection, MovementVector.X);
 
-        UEventBus::Get()->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
+        EventBus->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::Look(const FInputActionValue& Value)
@@ -202,7 +205,7 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
         AddControllerYawInput(LookAxisVector.X);
         AddControllerPitchInput(LookAxisVector.Y);
 
-        UEventBus::Get()->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
+        EventBus->OnPlayerMovedDelegate.Broadcast(FollowCamera->GetComponentLocation());
     }
 }
 void APlayerCharacter::ZoomIn()
@@ -345,7 +348,7 @@ void APlayerCharacter::TakeDamage(int32 Damage)
 void APlayerCharacter::StartDeathState()
 {
     bIsDead = true;
-    UEventBus::Get()->OnPlayerDeathDelegate.Broadcast();
+    EventBus->OnPlayerDeathDelegate.Broadcast();
     DisableInput(Cast<APlayerController>(GetController()));
     //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
     //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.

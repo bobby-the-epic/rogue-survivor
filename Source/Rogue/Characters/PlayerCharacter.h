@@ -16,6 +16,7 @@ class AArrowProjectile;
 class UArrowComponent;
 class UPlayerHUD;
 class USphereComponent;
+class UEventBus;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -65,6 +66,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bMultishotEnabled = false;
+
+    UPROPERTY()
+    UEventBus* EventBus;
 
     UPROPERTY(VisibleDefaultsOnly)
     USphereComponent* SphereCollider;

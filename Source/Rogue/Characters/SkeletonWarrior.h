@@ -9,6 +9,7 @@ class UWidgetComponent;
 class UEnemyHealthBar;
 class UBehaviorTree;
 class AExperienceOrb;
+class UEventBus;
 
 UCLASS()
 class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
@@ -29,6 +30,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
     UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsPlayerDead = false;
+
+    UPROPERTY()
+    UEventBus* EventBus;
 
     UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* WeaponMesh;
