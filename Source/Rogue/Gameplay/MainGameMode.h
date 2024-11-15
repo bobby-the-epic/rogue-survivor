@@ -5,6 +5,7 @@
 #include "MainGameMode.generated.h"
 
 class UEventBus;
+class APlayerCharacter;
 
 UCLASS(minimalapi)
 class AMainGameMode : public AGameModeBase
@@ -19,6 +20,9 @@ class AMainGameMode : public AGameModeBase
 
     UPROPERTY()
     UEventBus* EventBus;
+
+    UPROPERTY()
+    APlayerCharacter* Player;
 
   protected:
     virtual void BeginPlay() override;

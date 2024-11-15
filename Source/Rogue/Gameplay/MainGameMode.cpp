@@ -2,6 +2,7 @@
 #include "EventBus.h"
 #include "Kismet/GameplayStatics.h"
 #include "NavigationSystem.h"
+#include "Rogue/Characters/PlayerCharacter.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
 
 void AMainGameMode::BeginPlay()
@@ -10,6 +11,7 @@ void AMainGameMode::BeginPlay()
 
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
     UEventBus::Get()->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -19,7 +21,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void AMainGameMode::SpawnSkeleton() const
 {
     // Spawn a skeleton at a random location in a radius around the player
-    FVector PlayerLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+    FVector PlayerLocation = Player->GetActorLocation();
     FVector RandomPoint;
     FActorSpawnParameters SpawnParams;
     UNavigationSystemV1::K2_GetRandomReachablePointInRadius(GetWorld(), PlayerLocation, RandomPoint, 3000.0f);
