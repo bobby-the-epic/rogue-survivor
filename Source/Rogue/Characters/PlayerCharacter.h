@@ -15,6 +15,7 @@ class UInputAction;
 class AArrowProjectile;
 class UArrowComponent;
 class UPlayerHUD;
+class USphereComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -61,6 +62,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bMultishotEnabled = false;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    USphereComponent* SphereCollider;
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;

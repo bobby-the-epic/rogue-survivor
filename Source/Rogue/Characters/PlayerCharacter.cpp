@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/LocalPlayer.h"
@@ -73,6 +74,9 @@ APlayerCharacter::APlayerCharacter()
     MiddleArrowPos->SetupAttachment(RootComponent);
     RightArrowPos = CreateDefaultSubobject<UArrowComponent>("RightArrowPos");
     RightArrowPos->SetupAttachment(RootComponent);
+
+    SphereCollider = CreateDefaultSubobject<USphereComponent>("SphereCollider");
+    SphereCollider->SetupAttachment(RootComponent);
 }
 void APlayerCharacter::BeginPlay()
 {
