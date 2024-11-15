@@ -24,6 +24,9 @@ class AMainGameMode : public AGameModeBase
     UPROPERTY()
     APlayerCharacter* Player;
 
+  public:
+    FORCEINLINE UEventBus* GetEventBus() const { return EventBus; }
+
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

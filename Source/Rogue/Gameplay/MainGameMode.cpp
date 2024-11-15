@@ -10,12 +10,13 @@ void AMainGameMode::BeginPlay()
     Super::BeginPlay();
 
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
-    UEventBus::Get()->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    EventBus = NewObject<UEventBus>();
+    EventBus->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
     Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-    UEventBus::Get()->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
     Super::EndPlay(EndPlayReason);
 }
 void AMainGameMode::SpawnSkeleton() const
