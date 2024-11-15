@@ -23,6 +23,9 @@ class ROGUE_API AArrowProjectile : public AActor
 
   public:
     AArrowProjectile();
+
+    FORCEINLINE void SetWeaponDamage(int32 Damage) { WeaponDamage = Damage; }
+
     UFUNCTION(BlueprintCallable)
     void FireInDirection(const FVector& ShootDirection);
 

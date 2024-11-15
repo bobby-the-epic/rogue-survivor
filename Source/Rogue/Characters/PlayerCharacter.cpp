@@ -279,6 +279,7 @@ void APlayerCharacter::FireArrow()
     // Spawn the arrow and fire it in the launch direction
     AArrowProjectile* Arrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, MiddleArrowLocation,
                                                                        MiddleArrowRotation, SpawnParams);
+    Arrow->SetWeaponDamage(WeaponDamage);
     Arrow->FireInDirection(LaunchDirection);
     if (bMultishotEnabled)
     {
@@ -294,6 +295,8 @@ void APlayerCharacter::FireArrow()
                                                                                LeftArrowRotation, SpawnParams);
         AArrowProjectile* RightArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, RightArrowLocation,
                                                                                 RightArrowRotation, SpawnParams);
+        LeftArrow->SetWeaponDamage(WeaponDamage);
+        RightArrow->SetWeaponDamage(WeaponDamage);
         LeftArrow->FireInDirection(LeftDirection);
         RightArrow->FireInDirection(RightDirection);
     }

@@ -45,6 +45,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere)
     int32 Level = 1;
 
+    UPROPERTY(VisibleAnywhere)
+    int32 WeaponDamage = 5;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
 
