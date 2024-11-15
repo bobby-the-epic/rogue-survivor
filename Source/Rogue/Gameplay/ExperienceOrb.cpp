@@ -32,9 +32,33 @@ void AExperienceOrb::CollectExperience(UPrimitiveComponent* OverlappedComponent,
 {
     // The player should be the only actor that can overlap, but
     // check the cast just in case.
-    if (Cast<APlayerCharacter>(OtherActor))
+    APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
+    if (!Player)
+    {
+        return;
+    }
+    if (OtherComp->ComponentHasTag(TEXT("Collector")))
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Found Collector"));
+        Magnetize(Player);
+    }
+    else
     {
         UEventBus::Get()->OnCollectiblePickupDelegate.Broadcast();
+        Destroy();
     }
-    Destroy();
+}
+void AExperienceOrb::Magnetize(AActor* Player)
+{
+    // Moves the orb towards the player
+
+    if (IsValid(this))
+    {
+        GetWorldTimerManager().SetTimerForNextTick([this, Player] {
+            FVector NewLocation =
+                FMath::Lerp(GetActorLocation(), Player->GetActorLocation(), GetWorld()->GetDeltaSeconds());
+            SetActorLocation(NewLocation);
+            Magnetize(Player);
+        });
+    }
 }
