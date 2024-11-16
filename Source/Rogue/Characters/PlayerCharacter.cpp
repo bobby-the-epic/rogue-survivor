@@ -252,27 +252,18 @@ void APlayerCharacter::Attack()
 }
 void APlayerCharacter::FireArrow()
 {
-    FVector CameraLocation;
-    FRotator CameraRotation;
+    FVector CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
+    FRotator CameraRotation = CameraBoom->GetSocketRotation(CameraBoom->SocketName);
     FVector LaunchDirection;
     FVector MiddleArrowLocation = MiddleArrowPos->GetComponentLocation();
     FRotator MiddleArrowRotation = MiddleArrowPos->GetComponentRotation();
-    GetActorEyesViewPoint(CameraLocation, CameraRotation);
-    CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
 
     // Line trace
-    FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
+    FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 1000);
     FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
-    if (HitResult.bBlockingHit)
-    {
-        LaunchDirection = (HitResult.ImpactPoint - MiddleArrowLocation).GetSafeNormal();
-    }
-    else
-    {
         LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
-    }
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
     if (!bFullAutoFire)
