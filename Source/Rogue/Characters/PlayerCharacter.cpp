@@ -6,7 +6,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/ProgressBar.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
@@ -330,7 +329,7 @@ void APlayerCharacter::TakeDamage(int32 Damage)
         return;
     }
     CurrentHealth -= Damage;
-    PlayerHUD->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+    PlayerHUD->SetHealth(CurrentHealth, MaxHealth);
     if (CurrentHealth <= 0)
     {
         StartDeathState();
