@@ -37,4 +37,8 @@ void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
             HitActor->TakeDamage(WeaponDamage);
         }
     }
+    else
+    {
+        SetActorEnableCollision(false);
+    }
 }
