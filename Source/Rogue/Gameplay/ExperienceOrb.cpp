@@ -43,7 +43,10 @@ void AExperienceOrb::CollectExperience(UPrimitiveComponent* OverlappedComponent,
     if (OtherComp->ComponentHasTag(TEXT("Collector")))
     {
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Found Collector"));
-        Magnetize(Player);
+        FTimerHandle TimerHandle;
+        FTimerDelegate TimerDelegate;
+        TimerDelegate.BindUFunction(this, TEXT("Magnetize"), Player);
+        GetWorldTimerManager().SetTimer(TimerHandle, TimerDelegate, 0.02f, true);
     }
     else
     {
@@ -55,13 +58,9 @@ void AExperienceOrb::Magnetize(AActor* Player)
 {
     // Moves the orb towards the player
 
-    if (IsValid(this))
-    {
-        GetWorldTimerManager().SetTimerForNextTick([this, Player] {
-            FVector NewLocation =
-                FMath::Lerp(GetActorLocation(), Player->GetActorLocation(), GetWorld()->GetDeltaSeconds());
-            SetActorLocation(NewLocation);
-            Magnetize(Player);
-        });
-    }
+    FVector TargetLocation = Player->GetActorLocation();
+    TargetLocation.Z -= 75;
+    FVector NewLocation =
+        FMath::VInterpConstantTo(GetActorLocation(), TargetLocation, GetWorld()->GetDeltaSeconds(), 300.0f);
+    SetActorLocation(NewLocation);
 }
