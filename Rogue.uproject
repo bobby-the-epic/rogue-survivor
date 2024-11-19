@@ -13,7 +13,8 @@
 				"UMG",
 				"AIModule",
 				"NavigationSystem",
-				"Niagara"
+				"Niagara",
+				"CoreUObject"
 			]
 		}
 	],
