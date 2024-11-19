@@ -27,6 +27,7 @@ class ROGUE_API ABomb : public AActor
 
   public:
     ABomb();
+    FORCEINLINE void LaunchInDirection(FVector Direction) const { BombMesh->AddImpulse(Direction * 10000); }
 
   protected:
     void BeginPlay() override;

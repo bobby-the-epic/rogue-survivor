@@ -21,7 +21,6 @@ void ABomb::BeginPlay()
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     BombMesh->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnOverlap);
     BombMesh->OnComponentHit.AddDynamic(this, &ABomb::OnHit);
-    // BombMesh->AddImpulse(FVector(1, 0, 1) * 10000);
 }
 void ABomb::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
