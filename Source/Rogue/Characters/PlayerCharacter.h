@@ -68,6 +68,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bMultishotEnabled = false;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bBombUpgradeEnabled = false;
+
     UPROPERTY()
     UEventBus* EventBus;
 
@@ -76,6 +79,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class AArrowProjectile> ProjectileClass;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<class ABomb> BombClass;
 
     UPROPERTY(EditAnywhere)
     FVector ArrowOffset;
@@ -171,4 +177,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UFUNCTION()
     void AddExperience();
+
+    UFUNCTION()
+    void LaunchBombs();
 };

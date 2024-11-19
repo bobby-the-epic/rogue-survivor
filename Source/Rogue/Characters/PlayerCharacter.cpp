@@ -19,6 +19,7 @@
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/ArrowProjectile.h"
+#include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/PlayerHUD.h"
@@ -122,6 +123,9 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
+
+    FTimerHandle BombTimer;
+    GetWorldTimerManager().SetTimer(BombTimer, this, &APlayerCharacter::LaunchBombs, 3.0f, true);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -371,4 +375,19 @@ void APlayerCharacter::AddExperience()
         MaxExperience += 100;
         EventBus->OnPlayerLevelUpDelegate.Broadcast();
     }
+}
+void APlayerCharacter::LaunchBombs()
+{
+    FVector SpawnLocation = GetActorLocation();
+    SpawnLocation.Z += 30;
+    FVector ForwardDirection = GetActorForwardVector();
+    FVector RightDirection = GetActorRightVector();
+    ABomb* BombLeft = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+    ABomb* BombRight = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+    ABomb* BombForward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+    ABomb* BombBackward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+    BombLeft->LaunchInDirection(-RightDirection + FVector::UpVector);
+    BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
+    BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
+    BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
 }
