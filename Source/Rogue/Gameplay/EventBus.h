@@ -16,8 +16,12 @@ class ROGUE_API UEventBus : public UObject
     UDELEGATE()
     DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCollectiblePickupSignature);
 
+    UDELEGATE()
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerLevelUpSignature);
+
   public:
     FOnPlayerMovedSignature OnPlayerMovedDelegate;
     FOnPlayerDeathSignature OnPlayerDeathDelegate;
     FOnCollectiblePickupSignature OnCollectiblePickupDelegate;
+    FOnPlayerLevelUpSignature OnPlayerLevelUpDelegate;
 };
