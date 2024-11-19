@@ -16,6 +16,7 @@ class AArrowProjectile;
 class UArrowComponent;
 class UPlayerHUD;
 class USphereComponent;
+class UUpgradeScreen;
 class UEventBus;
 struct FInputActionValue;
 
@@ -96,6 +97,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY()
     UPlayerHUD* PlayerHUD;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UUpgradeScreen> UpgradeScreenClass;
+
+    UPROPERTY()
+    UUpgradeScreen* UpgradeScreen;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

@@ -22,6 +22,7 @@
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/PlayerHUD.h"
+#include "Rogue/UI/UpgradeScreen.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -107,12 +108,18 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->SetActorEnableCollision(false);
     PlaceholderArrow->SetLifeSpan(0);
 
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
     if (PlayerHUDClass)
     {
-        PlayerHUD = CreateWidget<UPlayerHUD>(Cast<APlayerController>(GetController()), PlayerHUDClass);
-        PlayerHUD->AddToPlayerScreen();
+        PlayerHUD = CreateWidget<UPlayerHUD>(PlayerController, PlayerHUDClass);
+        PlayerHUD->AddToViewport();
     }
-
+    if (UpgradeScreenClass)
+    {
+        UpgradeScreen = CreateWidget<UUpgradeScreen>(PlayerController, UpgradeScreenClass);
+        UpgradeScreen->SetVisibility(ESlateVisibility::Hidden);
+        UpgradeScreen->AddToViewport();
+    }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
 }
@@ -262,7 +269,7 @@ void APlayerCharacter::FireArrow()
     FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
-        LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
+    LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
     if (!bFullAutoFire)
@@ -362,5 +369,6 @@ void APlayerCharacter::AddExperience()
         Level++;
         CurrentExperience = 0;
         MaxExperience += 100;
+        EventBus->OnPlayerLevelUpDelegate.Broadcast();
     }
 }
