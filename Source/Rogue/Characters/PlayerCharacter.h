@@ -182,5 +182,8 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void AddExperience();
 
     UFUNCTION()
+    void StartLaunchingBombs();
+
+    UFUNCTION()
     void LaunchBombs();
 };

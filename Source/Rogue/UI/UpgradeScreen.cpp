@@ -101,4 +101,14 @@ void UUpgradeScreen::ChooseUpgrade(EButtonPos ButtonPos)
     {
         UpgradeObjects.Push(PresentedUpgrades.Pop());
     }
+
+    switch (UpgradeType)
+    {
+        case EUpgradeType::BombThrow:
+            EventBus->OnBombUpgradeChosenDelegate.Broadcast();
+            break;
+        default:
+            UE_LOG(LogTemp, Warning, TEXT("The %s upgrade has not been implemented"), *UpgradeName);
+            break;
+    }
 }

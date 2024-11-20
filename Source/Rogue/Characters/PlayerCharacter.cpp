@@ -123,6 +123,7 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus->OnBombUpgradeChosenDelegate.AddDynamic(this, &APlayerCharacter::StartLaunchingBombs);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -137,6 +138,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         UpgradeScreen = nullptr;
     }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus->OnBombUpgradeChosenDelegate.RemoveDynamic(this, &APlayerCharacter::StartLaunchingBombs);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -378,6 +380,11 @@ void APlayerCharacter::AddExperience()
         MaxExperience += 100;
         EventBus->OnPlayerLevelUpDelegate.Broadcast();
     }
+}
+void APlayerCharacter::StartLaunchingBombs()
+{
+    bBombUpgradeEnabled = true;
+    GetWorldTimerManager().SetTimer(BombTimer, this, &APlayerCharacter::LaunchBombs, 3.0f, true);
 }
 void APlayerCharacter::LaunchBombs()
 {
