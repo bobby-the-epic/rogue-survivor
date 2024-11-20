@@ -29,6 +29,9 @@ class ROGUE_API ABomb : public AActor
     UPROPERTY(VisibleDefaultsOnly)
     UNiagaraComponent* BombFuse;
 
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AActor> BombExplosionClass;
+
   public:
     ABomb();
     void LaunchInDirection(const FVector& Direction) const;

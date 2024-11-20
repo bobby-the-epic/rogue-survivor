@@ -43,6 +43,7 @@ void ABomb::Explode()
             Actor->TakeDamage(WeaponDamage);
         }
     }
+    GetWorld()->SpawnActor<AActor>(BombExplosionClass, GetActorLocation(), FRotator::ZeroRotator);
     Destroy();
 }
 void ABomb::LaunchInDirection(const FVector& Direction) const
