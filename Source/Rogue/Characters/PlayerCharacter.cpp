@@ -131,6 +131,11 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PlayerHUD->RemoveFromParent();
         PlayerHUD = nullptr;
     }
+    if (UpgradeScreen)
+    {
+        UpgradeScreen->RemoveFromParent();
+        UpgradeScreen = nullptr;
+    }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
 
     Super::EndPlay(EndPlayReason);
