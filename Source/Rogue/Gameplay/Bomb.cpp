@@ -5,6 +5,7 @@
 #include "EventBus.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainGameMode.h"
+#include "NiagaraComponent.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
 
 ABomb::ABomb()
@@ -14,6 +15,8 @@ ABomb::ABomb()
     RootComponent = BombMesh;
     BlastRadius = CreateDefaultSubobject<USphereComponent>(TEXT("BlastRadius"));
     BlastRadius->SetupAttachment(BombMesh);
+    BombFuse = CreateDefaultSubobject<UNiagaraComponent>(TEXT("BombFuse"));
+    BombFuse->SetupAttachment(BombMesh);
 }
 void ABomb::BeginPlay()
 {

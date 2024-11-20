@@ -7,6 +7,7 @@
 class UStaticMeshComponent;
 class USphereComponent;
 class UEventBus;
+class UNiagaraComponent;
 
 UCLASS()
 class ROGUE_API ABomb : public AActor
@@ -24,6 +25,9 @@ class ROGUE_API ABomb : public AActor
 
     UPROPERTY(VisibleDefaultsOnly)
     USphereComponent* BlastRadius;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    UNiagaraComponent* BombFuse;
 
   public:
     ABomb();
