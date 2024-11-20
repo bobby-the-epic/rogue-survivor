@@ -31,7 +31,7 @@ class ROGUE_API ABomb : public AActor
 
   public:
     ABomb();
-    FORCEINLINE void LaunchInDirection(const FVector& Direction) const { BombMesh->AddImpulse(Direction * 7500); }
+    void LaunchInDirection(const FVector& Direction) const;
 
   protected:
     void BeginPlay() override;
@@ -44,10 +44,16 @@ class ROGUE_API ABomb : public AActor
     // Should only be called when a wall or floor is hit.
     UFUNCTION()
     void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-               FVector NormalImpulse, const FHitResult& Hit);
+               FVector NormalImpulse, const FHitResult& Hit)
+    {
+        Explode();
+    }
 
     // Should only be called when an enemy is hit.
     UFUNCTION()
     void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                   int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+                   int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+    {
+        Explode();
+    }
 };

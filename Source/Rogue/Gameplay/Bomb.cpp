@@ -31,16 +31,6 @@ void ABomb::EndPlay(EEndPlayReason::Type EndPlayReason)
     BombMesh->OnComponentHit.RemoveDynamic(this, &ABomb::OnHit);
     Super::EndPlay(EndPlayReason);
 }
-void ABomb::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent,
-                  FVector NormalImpulse, const FHitResult& Hit)
-{
-    Explode();
-}
-void ABomb::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-                      int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-    Explode();
-}
 void ABomb::Explode()
 {
     TArray<AActor*> HitActors;
@@ -54,4 +44,11 @@ void ABomb::Explode()
         }
     }
     Destroy();
+}
+void ABomb::LaunchInDirection(const FVector& Direction) const
+{
+    BombMesh->AddImpulse(Direction * 7500);
+    FVector RotationDirection = Direction;
+    RotationDirection.Z = 0;
+    BombMesh->AddAngularImpulseInDegrees(RotationDirection * 750, NAME_None, true);
 }
