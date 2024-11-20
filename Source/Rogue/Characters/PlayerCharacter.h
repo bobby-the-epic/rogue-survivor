@@ -83,6 +83,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class ABomb> BombClass;
 
+    UPROPERTY()
+    FTimerHandle BombTimer;
+
     UPROPERTY(EditAnywhere)
     FVector ArrowOffset;
 

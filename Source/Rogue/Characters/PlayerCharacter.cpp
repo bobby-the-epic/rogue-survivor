@@ -123,9 +123,6 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
-
-    FTimerHandle BombTimer;
-    GetWorldTimerManager().SetTimer(BombTimer, this, &APlayerCharacter::LaunchBombs, 3.0f, true);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -351,6 +348,7 @@ void APlayerCharacter::StartDeathState()
     bIsDead = true;
     EventBus->OnPlayerDeathDelegate.Broadcast();
     DisableInput(Cast<APlayerController>(GetController()));
+    GetWorldTimerManager().ClearTimer(BombTimer);
     //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
     //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.
     FVector DeathCamLocation = FVector(175, 60, 200) + FollowCamera->GetComponentLocation();
