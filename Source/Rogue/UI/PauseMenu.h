@@ -6,6 +6,7 @@
 
 class UButton;
 class UBorder;
+class UCanvasPanel;
 
 UCLASS()
 class ROGUE_API UPauseMenu : public UUserWidget
@@ -31,7 +32,10 @@ class ROGUE_API UPauseMenu : public UUserWidget
     UButton* BackButton;
 
     UPROPERTY(meta = (BindWidget))
-    UBorder* QuitMenuBorder;
+    UCanvasPanel* ButtonCanvas;
+
+    UPROPERTY(meta = (BindWidget))
+    UCanvasPanel* QuitButtonCanvas;
 
     UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UWorld> MainMenuMap;

@@ -1,6 +1,7 @@
 #include "PauseMenu.h"
 #include "Components/Border.h"
 #include "Components/Button.h"
+#include "Components/CanvasPanel.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Rogue/Characters/PlayerCharacter.h"
@@ -32,15 +33,17 @@ void UPauseMenu::NativeDestruct()
 }
 void UPauseMenu::ToggleQuitMenu()
 {
-    if (QuitMenuBorder->IsVisible())
+    if (QuitButtonCanvas->IsVisible())
     {
-        QuitMenuBorder->SetVisibility(ESlateVisibility::Hidden);
+        QuitButtonCanvas->SetVisibility(ESlateVisibility::Hidden);
         BackButton->SetVisibility(ESlateVisibility::Hidden);
+        ButtonCanvas->SetVisibility(ESlateVisibility::Visible);
     }
     else
     {
-        QuitMenuBorder->SetVisibility(ESlateVisibility::Visible);
+        QuitButtonCanvas->SetVisibility(ESlateVisibility::Visible);
         BackButton->SetVisibility(ESlateVisibility::Visible);
+        ButtonCanvas->SetVisibility(ESlateVisibility::Hidden);
     }
 }
 void UPauseMenu::QuitToMainMenu()
