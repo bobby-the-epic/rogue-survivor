@@ -30,12 +30,6 @@ void UPauseMenu::NativeDestruct()
 
     Super::NativeDestruct();
 }
-void UPauseMenu::ResumeGame()
-{
-    SetVisibility(ESlateVisibility::Hidden);
-    UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(false);
-    UGameplayStatics::SetGamePaused(GetWorld(), false);
-}
 void UPauseMenu::ToggleQuitMenu()
 {
     if (QuitMenuBorder->IsVisible())

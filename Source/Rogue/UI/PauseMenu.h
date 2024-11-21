@@ -42,9 +42,6 @@ class ROGUE_API UPauseMenu : public UUserWidget
 
   private:
     UFUNCTION()
-    void ResumeGame();
-
-    UFUNCTION()
     void ToggleQuitMenu();
 
     UFUNCTION()
