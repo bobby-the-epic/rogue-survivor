@@ -18,6 +18,7 @@ class UPlayerHUD;
 class USphereComponent;
 class UUpgradeScreen;
 class UEventBus;
+class UPauseMenu;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -113,6 +114,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY()
     UUpgradeScreen* UpgradeScreen;
 
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UPauseMenu> PauseMenuClass;
+
+    UPROPERTY()
+    UPauseMenu* PauseMenu;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
@@ -143,6 +150,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
     UInputAction* ShootAction;
 
+    UPROPERTY(EditDefaultsOnly, Category = Input)
+    UInputAction* PauseAction;
+
   public:
     APlayerCharacter();
     /** Returns CameraBoom subobject **/
@@ -157,6 +167,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UFUNCTION(BlueprintCallable)
     void ReloadArrow();
+
+    UFUNCTION()
+    void TogglePauseMenu();
 
   protected:
     /** Called for movement input */

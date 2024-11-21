@@ -22,6 +22,7 @@
 #include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
+#include "Rogue/UI/PauseMenu.h"
 #include "Rogue/UI/PlayerHUD.h"
 #include "Rogue/UI/UpgradeScreen.h"
 
@@ -110,6 +111,7 @@ void APlayerCharacter::BeginPlay()
     PlaceholderArrow->SetLifeSpan(0);
 
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
+    // Adds UI menus to the viewport to show when needed.
     if (PlayerHUDClass)
     {
         PlayerHUD = CreateWidget<UPlayerHUD>(PlayerController, PlayerHUDClass);
@@ -120,6 +122,12 @@ void APlayerCharacter::BeginPlay()
         UpgradeScreen = CreateWidget<UUpgradeScreen>(PlayerController, UpgradeScreenClass);
         UpgradeScreen->SetVisibility(ESlateVisibility::Hidden);
         UpgradeScreen->AddToViewport();
+    }
+    if (PauseMenuClass)
+    {
+        PauseMenu = CreateWidget<UPauseMenu>(PlayerController, PauseMenuClass);
+        PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+        PauseMenu->AddToViewport();
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
@@ -175,6 +183,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFiring);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Canceled, this, &APlayerCharacter::StopFiring);
+        EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this,
+                                           &APlayerCharacter::TogglePauseMenu);
     }
     else
     {
@@ -400,4 +410,22 @@ void APlayerCharacter::LaunchBombs()
     BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
     BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
     BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
+}
+void APlayerCharacter::TogglePauseMenu()
+{
+    if (PauseMenu->IsVisible())
+    {
+        if (!UpgradeScreen->IsVisible())
+        {
+            UGameplayStatics::SetGamePaused(GetWorld(), false);
+            UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(false);
+        }
+        PauseMenu->SetVisibility(ESlateVisibility::Hidden);
+    }
+    else
+    {
+        UGameplayStatics::SetGamePaused(GetWorld(), true);
+        PauseMenu->SetVisibility(ESlateVisibility::Visible);
+        UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
+    }
 }
