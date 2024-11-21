@@ -7,6 +7,7 @@
 class UButton;
 class UBorder;
 class UCanvasPanel;
+class UUpgradeScreen;
 
 UCLASS()
 class ROGUE_API UPauseMenu : public UUserWidget
@@ -39,6 +40,13 @@ class ROGUE_API UPauseMenu : public UUserWidget
 
     UPROPERTY(EditDefaultsOnly)
     TSoftObjectPtr<UWorld> MainMenuMap;
+
+    UPROPERTY()
+    UUpgradeScreen* UpgradeScreen;
+
+  public:
+    UFUNCTION(Exec)
+    void TogglePauseMenu();
 
   protected:
     virtual void NativeConstruct() override;

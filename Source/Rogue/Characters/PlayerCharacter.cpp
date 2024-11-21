@@ -183,8 +183,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFiring);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Canceled, this, &APlayerCharacter::StopFiring);
-        EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this,
-                                           &APlayerCharacter::TogglePauseMenu);
+        EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, PauseMenu,
+                                           &UPauseMenu::TogglePauseMenu);
     }
     else
     {
@@ -410,22 +410,4 @@ void APlayerCharacter::LaunchBombs()
     BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
     BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
     BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
-}
-void APlayerCharacter::TogglePauseMenu()
-{
-    if (PauseMenu->IsVisible())
-    {
-        if (!UpgradeScreen->IsVisible())
-        {
-            UGameplayStatics::SetGamePaused(GetWorld(), false);
-            UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(false);
-        }
-        PauseMenu->SetVisibility(ESlateVisibility::Hidden);
-    }
-    else
-    {
-        UGameplayStatics::SetGamePaused(GetWorld(), true);
-        PauseMenu->SetVisibility(ESlateVisibility::Visible);
-        UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
-    }
 }

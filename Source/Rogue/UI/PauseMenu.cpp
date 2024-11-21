@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Rogue/Characters/PlayerCharacter.h"
+#include "UpgradeScreen.h"
 
 void UPauseMenu::NativeConstruct()
 {
@@ -12,7 +13,8 @@ void UPauseMenu::NativeConstruct()
     // Bind delegates
 
     APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwningPlayer()->GetCharacter());
-    ResumeButton->OnReleased.AddDynamic(Player, &APlayerCharacter::TogglePauseMenu);
+    UpgradeScreen = Player->GetUpgradeScreen();
+    ResumeButton->OnReleased.AddDynamic(this, &UPauseMenu::TogglePauseMenu);
     BackButton->OnReleased.AddDynamic(this, &UPauseMenu::ToggleQuitMenu);
     QuitButton->OnReleased.AddDynamic(this, &UPauseMenu::ToggleQuitMenu);
     QuitToMainMenuButton->OnReleased.AddDynamic(this, &UPauseMenu::QuitToMainMenu);
@@ -22,14 +24,31 @@ void UPauseMenu::NativeDestruct()
 {
     // Unbind delegates
 
-    APlayerCharacter* Player = Cast<APlayerCharacter>(GetOwningPlayer()->GetCharacter());
-    ResumeButton->OnReleased.RemoveDynamic(Player, &APlayerCharacter::TogglePauseMenu);
+    ResumeButton->OnReleased.RemoveDynamic(this, &UPauseMenu::TogglePauseMenu);
     BackButton->OnReleased.RemoveDynamic(this, &UPauseMenu::ToggleQuitMenu);
     QuitButton->OnReleased.RemoveDynamic(this, &UPauseMenu::ToggleQuitMenu);
     QuitToMainMenuButton->OnReleased.RemoveDynamic(this, &UPauseMenu::QuitToMainMenu);
     QuitGameButton->OnReleased.RemoveDynamic(this, &UPauseMenu::QuitGame);
 
     Super::NativeDestruct();
+}
+void UPauseMenu::TogglePauseMenu()
+{
+    if (IsVisible())
+    {
+        if (!UpgradeScreen->IsVisible())
+        {
+            UGameplayStatics::SetGamePaused(GetWorld(), false);
+            UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(false);
+        }
+        SetVisibility(ESlateVisibility::Hidden);
+    }
+    else
+    {
+        UGameplayStatics::SetGamePaused(GetWorld(), true);
+        SetVisibility(ESlateVisibility::Visible);
+        UGameplayStatics::GetPlayerController(GetWorld(), 0)->SetShowMouseCursor(true);
+    }
 }
 void UPauseMenu::ToggleQuitMenu()
 {

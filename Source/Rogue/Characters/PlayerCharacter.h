@@ -161,15 +161,13 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
     virtual void TakeDamage(int32 Damage) override;
+    UUpgradeScreen* GetUpgradeScreen() const { return UpgradeScreen; }
 
     UFUNCTION(BlueprintCallable)
     void FireArrow();
 
     UFUNCTION(BlueprintCallable)
     void ReloadArrow();
-
-    UFUNCTION()
-    void TogglePauseMenu();
 
   protected:
     /** Called for movement input */
