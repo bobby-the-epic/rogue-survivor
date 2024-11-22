@@ -8,6 +8,7 @@ class UButton;
 class UBorder;
 class UCanvasPanel;
 class UUpgradeScreen;
+class UOptionsMenu;
 
 UCLASS()
 class ROGUE_API UPauseMenu : public UUserWidget
@@ -44,6 +45,12 @@ class ROGUE_API UPauseMenu : public UUserWidget
     UPROPERTY()
     UUpgradeScreen* UpgradeScreen;
 
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UOptionsMenu> OptionsMenuClass;
+
+    UPROPERTY()
+    UOptionsMenu* OptionsMenu;
+
   public:
     UFUNCTION(Exec)
     void TogglePauseMenu();
@@ -61,4 +68,7 @@ class ROGUE_API UPauseMenu : public UUserWidget
 
     UFUNCTION()
     void QuitGame();
+
+    UFUNCTION()
+    void ToggleOptionsMenu();
 };
