@@ -21,11 +21,11 @@ class ROGUE_API UOptionsMenu : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     USlider* SFXSlider;
 
+  public:
+    UFUNCTION(BlueprintCallable)
+    void ToggleOptionsMenu();
+
   protected:
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;
-
-  private:
-    UFUNCTION(BlueprintCallable)
-    void ToggleOptionsMenu();
 };
