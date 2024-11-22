@@ -146,6 +146,11 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         UpgradeScreen->RemoveFromParent();
         UpgradeScreen = nullptr;
     }
+    if (PauseMenu)
+    {
+        PauseMenu->RemoveFromParent();
+        PauseMenu = nullptr;
+    }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
     EventBus->OnBombUpgradeChosenDelegate.RemoveDynamic(this, &APlayerCharacter::StartLaunchingBombs);
 
@@ -184,8 +189,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Attack);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &APlayerCharacter::StopFiring);
         EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Canceled, this, &APlayerCharacter::StopFiring);
-        EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, PauseMenu,
-                                           &UPauseMenu::TogglePauseMenu);
+        EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Triggered, this,
+                                           &APlayerCharacter::TogglePauseMenu);
     }
     else
     {
@@ -420,4 +425,8 @@ void APlayerCharacter::LaunchBombs()
     BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
     BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
     BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
+}
+void APlayerCharacter::TogglePauseMenu()
+{
+    PauseMenu->TogglePauseMenu();
 }

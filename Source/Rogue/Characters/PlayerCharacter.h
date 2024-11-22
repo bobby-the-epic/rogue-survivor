@@ -204,4 +204,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UFUNCTION()
     void LaunchBombs();
+
+    UFUNCTION()
+    void TogglePauseMenu();
 };
