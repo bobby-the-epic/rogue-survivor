@@ -9,8 +9,8 @@ void UOptionsMenu::NativeConstruct()
 }
 void UOptionsMenu::NativeDestruct()
 {
-    Super::NativeDestruct();
     BackButton->OnReleased.RemoveDynamic(this, &UOptionsMenu::ToggleOptionsMenu);
+    Super::NativeDestruct();
 }
 void UOptionsMenu::ToggleOptionsMenu()
 {
