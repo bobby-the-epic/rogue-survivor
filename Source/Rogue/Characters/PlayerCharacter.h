@@ -19,6 +19,7 @@ class USphereComponent;
 class UUpgradeScreen;
 class UEventBus;
 class UPauseMenu;
+class UDeathMenu;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -119,6 +120,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY()
     UPauseMenu* PauseMenu;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UDeathMenu> DeathMenuClass;
+
+    UPROPERTY()
+    UDeathMenu* DeathMenu;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

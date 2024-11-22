@@ -22,6 +22,7 @@
 #include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
+#include "Rogue/UI/DeathMenu.h"
 #include "Rogue/UI/PauseMenu.h"
 #include "Rogue/UI/PlayerHUD.h"
 #include "Rogue/UI/UpgradeScreen.h"
@@ -373,12 +374,21 @@ void APlayerCharacter::StartDeathState()
     FRotator DeathCamRotation = FRotator(-90, 0, 0);
     AActor* DeathCam = GetWorld()->SpawnActor<AActor>(AActor::StaticClass());
     UStaticMeshComponent* StaticMeshComponent = NewObject<UStaticMeshComponent>(DeathCam);
+    APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
     DeathCam->SetRootComponent(StaticMeshComponent);
     StaticMeshComponent->RegisterComponent();
     DeathCam->SetActorLocation(DeathCamLocation);
     DeathCam->SetActorRotation(DeathCamRotation);
-    Cast<APlayerController>(GetController())
-        ->SetViewTargetWithBlend(DeathCam, 6.0f, EViewTargetBlendFunction::VTBlend_EaseOut, 3.0f);
+    PlayerController->SetViewTargetWithBlend(DeathCam, 6.0f, EViewTargetBlendFunction::VTBlend_EaseOut, 3.0f);
+
+    // Creates the death menu widget
+    if (DeathMenuClass)
+    {
+        DeathMenu = CreateWidget<UDeathMenu>(PlayerController, DeathMenuClass);
+        DeathMenu->AddToViewport();
+        PlayerController->SetShowMouseCursor(true);
+    }
 }
 void APlayerCharacter::AddExperience()
 {
