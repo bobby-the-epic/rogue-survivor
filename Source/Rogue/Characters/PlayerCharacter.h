@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "Rogue/Gameplay/CombatInterface.h"
+#include "Rogue/UI/EUpgradeType.h"
 #include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -162,12 +163,14 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
   public:
     APlayerCharacter();
+
+    virtual void TakeDamage(int32 Damage) override;
+    void ApplyUpgrade(EUpgradeType UpgradeType);
+
     /** Returns CameraBoom subobject **/
     FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
     /** Returns FollowCamera subobject **/
     FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-
-    virtual void TakeDamage(int32 Damage) override;
     UUpgradeScreen* GetUpgradeScreen() const { return UpgradeScreen; }
 
     UFUNCTION(BlueprintCallable)

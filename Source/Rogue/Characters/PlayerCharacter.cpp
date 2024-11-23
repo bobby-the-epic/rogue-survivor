@@ -18,6 +18,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "InputActionValue.h"
 #include "Kismet/GameplayStatics.h"
+#include "Logging/StructuredLog.h"
 #include "Rogue/Gameplay/ArrowProjectile.h"
 #include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
@@ -132,7 +133,6 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
-    EventBus->OnBombUpgradeChosenDelegate.AddDynamic(this, &APlayerCharacter::StartLaunchingBombs);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -152,7 +152,6 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PauseMenu = nullptr;
     }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
-    EventBus->OnBombUpgradeChosenDelegate.RemoveDynamic(this, &APlayerCharacter::StartLaunchingBombs);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -430,4 +429,23 @@ void APlayerCharacter::LaunchBombs()
 void APlayerCharacter::TogglePauseMenu()
 {
     PauseMenu->TogglePauseMenu();
+}
+void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
+{
+    // Debugging
+    const UEnum* UpgradeClass = StaticEnum<EUpgradeType>();
+    FString UpgradeName = UpgradeClass->GetNameStringByIndex(static_cast<int32>(UpgradeType));
+    UE_LOGFMT(LogTemp, Warning, "Chosen upgrade: {0}", UpgradeName);
+
+    switch (UpgradeType)
+    {
+        case EUpgradeType::FullAutoFire:
+            break;
+        case EUpgradeType::BombThrow:
+            StartLaunchingBombs();
+            break;
+        default:
+            UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
+            break;
+    }
 }

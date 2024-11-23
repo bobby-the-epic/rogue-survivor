@@ -3,6 +3,7 @@
 #include "Components/Image.h"
 #include "EUpgradeType.h"
 #include "Kismet/GameplayStatics.h"
+#include "Rogue/Characters/PlayerCharacter.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
 #include "Upgrade.h"
@@ -81,10 +82,7 @@ void UUpgradeScreen::ChooseRightUpgrade()
 void UUpgradeScreen::ChooseUpgrade(EButtonPos ButtonPos)
 {
     EUpgradeType UpgradeType = PresentedUpgrades[ButtonPos]->GetType();
-    // Debugging
-    const UEnum* UpgradeClass = StaticEnum<EUpgradeType>();
-    FString UpgradeName = UpgradeClass->GetNameStringByIndex(static_cast<int32>(UpgradeType));
-    UE_LOG(LogTemp, Warning, TEXT("Chosen upgrade: %s"), *UpgradeName);
+
     // Removes the upgrades that would be useless if chosen more than once.
     if (UpgradeType == EUpgradeType::FullAutoFire || UpgradeType == EUpgradeType::Multishot ||
         UpgradeType == EUpgradeType::BombThrow || UpgradeType == EUpgradeType::KnockbackArrows ||
@@ -102,13 +100,7 @@ void UUpgradeScreen::ChooseUpgrade(EButtonPos ButtonPos)
         UpgradeObjects.Push(PresentedUpgrades.Pop());
     }
 
-    switch (UpgradeType)
-    {
-        case EUpgradeType::BombThrow:
-            EventBus->OnBombUpgradeChosenDelegate.Broadcast();
-            break;
-        default:
-            UE_LOG(LogTemp, Warning, TEXT("The %s upgrade has not been implemented"), *UpgradeName);
-            break;
-    }
+    // Get the player and apply the upgrade
+    APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    Player->ApplyUpgrade(UpgradeType);
 }
