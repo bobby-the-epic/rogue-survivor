@@ -6,11 +6,15 @@
 
 class UProgressBar;
 class UImage;
+class UTextBlock;
+struct FTimespan;
 
 UCLASS()
 class ROGUE_API UPlayerHUD : public UUserWidget
 {
     GENERATED_BODY()
+
+    FTimespan GameTimer;
 
     UPROPERTY(meta = (BindWidget))
     UProgressBar* HealthBar;
@@ -21,7 +25,12 @@ class ROGUE_API UPlayerHUD : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     UProgressBar* ExperienceBar;
 
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* TimerText;
+
   public:
+    virtual void NativeConstruct() override;
     void SetHealth(float CurrentHealth, float MaxHealth);
     void SetExperience(float CurrentExp, float MaxExp);
+    void UpdateTimer();
 };
