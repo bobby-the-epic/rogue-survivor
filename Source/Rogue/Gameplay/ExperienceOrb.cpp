@@ -42,7 +42,6 @@ void AExperienceOrb::CollectExperience(UPrimitiveComponent* OverlappedComponent,
     }
     if (OtherComp->ComponentHasTag(TEXT("Collector")))
     {
-        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::White, TEXT("Found Collector"));
         FTimerHandle TimerHandle;
         FTimerDelegate TimerDelegate;
         TimerDelegate.BindUFunction(this, TEXT("Magnetize"), Player);
