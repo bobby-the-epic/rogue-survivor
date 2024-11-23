@@ -28,12 +28,6 @@ class ROGUE_API UUpgradeScreen : public UUserWidget
     UButton* UpgradeButtonRight;
 
     UPROPERTY(meta = (BindWidget))
-    UButton* RerollButton;
-
-    UPROPERTY(meta = (BindWidget))
-    UButton* SkipButton;
-
-    UPROPERTY(meta = (BindWidget))
     UImage* ImageLeft;
 
     UPROPERTY(meta = (BindWidget))
@@ -73,6 +67,10 @@ class ROGUE_API UUpgradeScreen : public UUserWidget
     void NativeDestruct() override;
 
   private:
+    void HideUpgradeScreen();
+    void ShuffleUpgrades();
+    void ChooseUpgrade(EButtonPos ButtonPos);
+
     UFUNCTION(Exec)
     void ShowUpgradeScreen();
 
@@ -84,8 +82,4 @@ class ROGUE_API UUpgradeScreen : public UUserWidget
 
     UFUNCTION()
     void ChooseRightUpgrade();
-
-    void HideUpgradeScreen();
-    void ShuffleUpgrades();
-    void ChooseUpgrade(EButtonPos ButtonPos);
 };
