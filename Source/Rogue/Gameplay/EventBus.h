@@ -19,9 +19,6 @@ class ROGUE_API UEventBus : public UObject
     UDELEGATE()
     DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPlayerLevelUpSignature);
 
-    UDELEGATE()
-    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnBombUpgradeChosenSignature);
-
   public:
     UPROPERTY()
     FOnPlayerMovedSignature OnPlayerMovedDelegate;
@@ -34,7 +31,4 @@ class ROGUE_API UEventBus : public UObject
 
     UPROPERTY()
     FOnPlayerLevelUpSignature OnPlayerLevelUpDelegate;
-
-    UPROPERTY()
-    FOnBombUpgradeChosenSignature OnBombUpgradeChosenDelegate;
 };
