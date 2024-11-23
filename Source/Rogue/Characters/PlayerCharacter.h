@@ -128,6 +128,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY()
     UDeathMenu* DeathMenu;
 
+    UPROPERTY()
+    FTimerHandle GameTimer;
+
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
     USpringArmComponent* CameraBoom;
@@ -210,4 +213,7 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UFUNCTION()
     void TogglePauseMenu();
+
+    UFUNCTION()
+    void UpdateTimer();
 };
