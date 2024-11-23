@@ -20,10 +20,10 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     int32 WeaponDamage = 5;
 
     UPROPERTY(VisibleAnywhere)
-    float CurrentHealth = 100;
+    int32 CurrentHealth = 100;
 
     UPROPERTY(VisibleAnywhere)
-    float MaxHealth = 100;
+    int32 MaxHealth = 100;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsDead = false;

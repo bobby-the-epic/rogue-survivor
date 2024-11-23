@@ -35,10 +35,10 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     float ElapsedTime = 0;
 
     UPROPERTY(VisibleAnywhere)
-    float CurrentHealth = 100;
+    int32 CurrentHealth = 100;
 
     UPROPERTY(VisibleAnywhere)
-    float MaxHealth = 100;
+    int32 MaxHealth = 100;
 
     UPROPERTY(VisibleAnywhere)
     int32 CurrentExperience = 0;

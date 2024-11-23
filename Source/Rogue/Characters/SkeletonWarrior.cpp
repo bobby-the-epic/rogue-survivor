@@ -100,7 +100,7 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
         return;
     }
-    HealthBarWidget->HealthBar->SetPercent(CurrentHealth / MaxHealth);
+    HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
 }
 void ASkeletonWarrior::UpdateHealthBarRotation(FVector CameraLocation)
 {
