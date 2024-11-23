@@ -405,6 +405,7 @@ void APlayerCharacter::AddExperience()
         MaxExperience += 100;
         EventBus->OnPlayerLevelUpDelegate.Broadcast();
     }
+    PlayerHUD->SetExperience(CurrentExperience, MaxExperience);
 }
 void APlayerCharacter::StartLaunchingBombs()
 {

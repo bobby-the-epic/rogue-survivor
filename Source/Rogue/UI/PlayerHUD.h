@@ -18,6 +18,10 @@ class ROGUE_API UPlayerHUD : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     UImage* Crosshair;
 
+    UPROPERTY(meta = (BindWidget))
+    UProgressBar* ExperienceBar;
+
   public:
     void SetHealth(float CurrentHealth, float MaxHealth);
+    void SetExperience(float CurrentExp, float MaxExp);
 };
