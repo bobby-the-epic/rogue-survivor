@@ -16,14 +16,14 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
 
-    UPROPERTY()
+    UPROPERTY(EditDefaultsOnly)
     int32 WeaponDamage = 5;
 
-    UPROPERTY(VisibleAnywhere)
-    int32 CurrentHealth = 100;
+    UPROPERTY(EditDefaultsOnly)
+    int32 CurrentHealth = 30;
 
-    UPROPERTY(VisibleAnywhere)
-    int32 MaxHealth = 100;
+    UPROPERTY(EditDefaultsOnly)
+    int32 MaxHealth = 30;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsDead = false;

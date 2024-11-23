@@ -55,6 +55,7 @@ void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
         EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     }
     EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
+    GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -62,14 +63,13 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
     // when the spawn animation is done playing.
-    if (!IsPlayerDead)
+    if (!IsPlayerDead && IsValid(this))
     {
         AAIController* AIController = Cast<AAIController>(GetController());
         ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         AIController->RunBehaviorTree(BehaviorTree);
         AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
     }
-    GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
 {

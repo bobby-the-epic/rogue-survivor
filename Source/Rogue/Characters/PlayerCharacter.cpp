@@ -440,6 +440,10 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
     switch (UpgradeType)
     {
         case EUpgradeType::FullAutoFire:
+            bFullAutoFire = true;
+            break;
+        case EUpgradeType::Multishot:
+            bMultishotEnabled = true;
             break;
         case EUpgradeType::BombThrow:
             StartLaunchingBombs();

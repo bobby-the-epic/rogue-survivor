@@ -35,23 +35,23 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     float ZoomedOutFOV;
     float ElapsedTime = 0;
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(EditDefaultsOnly)
     int32 CurrentHealth = 100;
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(EditDefaultsOnly)
     int32 MaxHealth = 100;
 
     UPROPERTY(VisibleAnywhere)
     int32 CurrentExperience = 0;
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(EditDefaultsOnly)
     int32 MaxExperience = 1000;
 
     UPROPERTY(VisibleAnywhere)
     int32 Level = 1;
 
-    UPROPERTY(VisibleAnywhere)
-    int32 WeaponDamage = 5;
+    UPROPERTY(EditDefaultsOnly)
+    int32 WeaponDamage = 10;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
