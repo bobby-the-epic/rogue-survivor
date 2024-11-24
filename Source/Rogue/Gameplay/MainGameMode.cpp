@@ -39,4 +39,15 @@ void AMainGameMode::StopSpawningSkeletons()
 void AMainGameMode::GameOver()
 {
     StopSpawningSkeletons();
+    // Destroy remaining skeletons
+    TArray<AActor*> RemainingSkeletons;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), SkeletonClass, RemainingSkeletons);
+    for (AActor* Actor : RemainingSkeletons)
+    {
+        ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(Actor);
+        if (Skeleton)
+        {
+            Skeleton->Die();
+        }
+    }
 }
