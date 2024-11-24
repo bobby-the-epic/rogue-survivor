@@ -7,6 +7,7 @@
 #include "Logging/LogMacros.h"
 #include "Rogue/Gameplay/CombatInterface.h"
 #include "Rogue/UI/EUpgradeType.h"
+#include "Rogue/UI/PlayerHUD.h"
 #include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
@@ -15,7 +16,6 @@ class UInputMappingContext;
 class UInputAction;
 class AArrowProjectile;
 class UArrowComponent;
-class UPlayerHUD;
 class USphereComponent;
 class UUpgradeScreen;
 class UEventBus;
@@ -215,5 +215,8 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void TogglePauseMenu();
 
     UFUNCTION()
-    void UpdateTimer();
+    void UpdateTimer() { PlayerHUD->UpdateTimer(); }
+
+    UFUNCTION()
+    void StopTimer() { GetWorldTimerManager().ClearTimer(GameTimer); }
 };

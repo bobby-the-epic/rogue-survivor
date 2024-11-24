@@ -133,6 +133,7 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus->OnGameOverDelegate.AddDynamic(this, &APlayerCharacter::StopTimer);
     GetWorldTimerManager().SetTimer(GameTimer, this, &APlayerCharacter::UpdateTimer, 1.0f, true);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -153,6 +154,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PauseMenu = nullptr;
     }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
+    EventBus->OnGameOverDelegate.RemoveDynamic(this, &APlayerCharacter::StopTimer);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -453,8 +455,4 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
             UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
             break;
     }
-}
-void APlayerCharacter::UpdateTimer()
-{
-    PlayerHUD->UpdateTimer();
 }
