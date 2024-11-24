@@ -16,6 +16,9 @@ class ROGUE_API UPlayerHUD : public UUserWidget
 
     FTimespan GameTimer;
 
+    UPROPERTY(EditDefaultsOnly)
+    double TimerInMinutes = 30.0;
+
     UPROPERTY(meta = (BindWidget))
     UProgressBar* HealthBar;
 
