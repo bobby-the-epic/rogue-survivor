@@ -61,12 +61,15 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
   public:
     ASkeletonWarrior();
     virtual void TakeDamage(int32 Damage) override;
+    void Die();
 
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
   private:
+    void SpawnExperienceOrb();
+
     UFUNCTION()
     void UpdateHealthBarRotation(FVector CameraLocation);
 

@@ -63,7 +63,7 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
     // when the spawn animation is done playing.
-    if (!IsPlayerDead && IsValid(this))
+    if (!IsPlayerDead && IsValid(this) && !IsDead)
     {
         AAIController* AIController = Cast<AAIController>(GetController());
         ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
@@ -87,17 +87,8 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
     CurrentHealth -= Damage;
     if (CurrentHealth <= 0)
     {
-        IsDead = true;
-        EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-        HealthBarWidgetComponent->DestroyComponent();
-        SetActorEnableCollision(false);
-        // Sets a timer to destroy the actor so the body lingers for a few seconds.
-        FTimerHandle TimerHandle;
-        GetController()->Destroy();
-        GetWorldTimerManager().SetTimer(TimerHandle, [this] { Destroy(); }, 5.0f, false);
-        FVector SpawnLocation = GetActorLocation();
-        SpawnLocation.Z = 0;
-        GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
+        Die();
+        SpawnExperienceOrb();
         return;
     }
     HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
@@ -123,4 +114,21 @@ void ASkeletonWarrior::Celebrate()
 {
     IsPlayerDead = true;
     GetController()->Destroy();
+}
+void ASkeletonWarrior::Die()
+{
+    IsDead = true;
+    EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+    HealthBarWidgetComponent->DestroyComponent();
+    SetActorEnableCollision(false);
+    // Sets a timer to destroy the actor so the body lingers for a few seconds.
+    FTimerHandle TimerHandle;
+    GetController()->Destroy();
+    GetWorldTimerManager().SetTimer(TimerHandle, [this] { Destroy(); }, 5.0f, false);
+}
+void ASkeletonWarrior::SpawnExperienceOrb()
+{
+    FVector SpawnLocation = GetActorLocation();
+    SpawnLocation.Z = 0;
+    GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
 }
