@@ -37,4 +37,7 @@ class AMainGameMode : public AGameModeBase
 
     UFUNCTION()
     void StopSpawningSkeletons();
+
+    UFUNCTION()
+    void GameOver();
 };

@@ -12,11 +12,13 @@ void AMainGameMode::BeginPlay()
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
     EventBus = NewObject<UEventBus>();
     EventBus->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    EventBus->OnGameOverDelegate.AddDynamic(this, &AMainGameMode::GameOver);
     Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
+    EventBus->OnGameOverDelegate.RemoveDynamic(this, &AMainGameMode::GameOver);
     Super::EndPlay(EndPlayReason);
 }
 void AMainGameMode::SpawnSkeleton() const
@@ -33,4 +35,8 @@ void AMainGameMode::SpawnSkeleton() const
 void AMainGameMode::StopSpawningSkeletons()
 {
     GetWorldTimerManager().ClearTimer(SpawnTimerHandle);
+}
+void AMainGameMode::GameOver()
+{
+    StopSpawningSkeletons();
 }
