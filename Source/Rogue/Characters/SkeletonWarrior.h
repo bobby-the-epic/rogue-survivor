@@ -76,6 +76,12 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UFUNCTION()
     void EndSpawning(UAnimMontage* Montage, bool bInterrupted);
 
+    UFUNCTION()
+    void MoveMeshUp() { GetMesh()->SetRelativeLocation(FVector(0, 0, -65.0f)); }
+
+    UFUNCTION()
+    void DestroyCorpse() { Destroy(); }
+
     UFUNCTION(BlueprintCallable)
     void Attack() const;
 

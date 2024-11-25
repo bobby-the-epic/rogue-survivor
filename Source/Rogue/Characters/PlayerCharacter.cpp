@@ -155,6 +155,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
     }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
     EventBus->OnGameOverDelegate.RemoveDynamic(this, &APlayerCharacter::StopTimer);
+    GetWorldTimerManager().ClearAllTimersForObject(this);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -340,20 +341,20 @@ void APlayerCharacter::StopFiring()
         RotateCharacter();
     }
 }
+void APlayerCharacter::RotateCharacter()
+{
 /*
         Rotates the character in the direction the camera is facing when
         the player shoots without aiming (AKA hip fire).
 */
-void APlayerCharacter::RotateCharacter()
-{
+
     FTimerHandle TimerHandle;
-    GetWorldTimerManager().SetTimer(
-        TimerHandle,
-        [this] {
+    GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerCharacter::ResetRotation, 0.35f, false);
+}
+void APlayerCharacter::ResetRotation()
+{
             GetCharacterMovement()->bOrientRotationToMovement = true;
             GetCharacterMovement()->bUseControllerDesiredRotation = false;
-        },
-        0.35f, false);
 }
 void APlayerCharacter::TakeDamage(int32 Damage)
 {
@@ -373,7 +374,7 @@ void APlayerCharacter::StartDeathState()
     bIsDead = true;
     EventBus->OnPlayerDeathDelegate.Broadcast();
     DisableInput(Cast<APlayerController>(GetController()));
-    GetWorldTimerManager().ClearTimer(BombTimer);
+    GetWorldTimerManager().ClearAllTimersForObject(this);
     //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
     //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.
     FVector DeathCamLocation = FVector(175, 60, 200) + FollowCamera->GetComponentLocation();

@@ -42,8 +42,7 @@ void ASkeletonWarrior::BeginPlay()
             Otherwise, the animation will flicker from the state machine to the montage.
             This workaround hides the flickering.
         */
-        GetWorldTimerManager().SetTimer(
-            TimerHandle, [this] { GetMesh()->SetRelativeLocation(FVector(0, 0, -65.0f)); }, 0.2f, false);
+        GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::MoveMeshUp, 0.2f, false);
         GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
     }
 }
@@ -56,6 +55,7 @@ void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
     }
     EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
     GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
+    GetWorldTimerManager().ClearAllTimersForObject(this);
 
     Super::EndPlay(EndPlayReason);
 }
@@ -117,14 +117,17 @@ void ASkeletonWarrior::Celebrate()
 }
 void ASkeletonWarrior::Die()
 {
-    IsDead = true;
-    EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-    HealthBarWidgetComponent->DestroyComponent();
-    SetActorEnableCollision(false);
-    // Sets a timer to destroy the actor so the body lingers for a few seconds.
-    FTimerHandle TimerHandle;
-    GetController()->Destroy();
-    GetWorldTimerManager().SetTimer(TimerHandle, [this] { Destroy(); }, 5.0f, false);
+    if (!IsDead)
+    {
+        IsDead = true;
+        EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        HealthBarWidgetComponent->DestroyComponent();
+        SetActorEnableCollision(false);
+        // Sets a timer to destroy the actor so the body lingers for a few seconds.
+        FTimerHandle TimerHandle;
+        GetController()->Destroy();
+        GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::DestroyCorpse, 5.0f, false);
+    }
 }
 void ASkeletonWarrior::SpawnExperienceOrb()
 {

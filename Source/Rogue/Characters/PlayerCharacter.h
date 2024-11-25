@@ -203,6 +203,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void StartDeathState();
 
     UFUNCTION()
+    void ResetRotation();
+
+    UFUNCTION()
     void AddExperience();
 
     UFUNCTION()
