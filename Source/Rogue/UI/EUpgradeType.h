@@ -11,5 +11,4 @@ enum class EUpgradeType : uint8
     Damage,
     Health,
     MovementSpeed,
-    FireRate,
 };
