@@ -309,6 +309,10 @@ void APlayerCharacter::FireArrow()
                                                                        MiddleArrowRotation, SpawnParams);
     Arrow->SetWeaponDamage(WeaponDamage);
     Arrow->FireInDirection(LaunchDirection);
+    if (bKnockbackEnabled)
+    {
+        Arrow->SetKnockback(true);
+    }
     if (bMultishotEnabled)
     {
         // Spawns the arrows with the arrow components' locations and rotations
@@ -327,6 +331,11 @@ void APlayerCharacter::FireArrow()
         RightArrow->SetWeaponDamage(WeaponDamage);
         LeftArrow->FireInDirection(LeftDirection);
         RightArrow->FireInDirection(RightDirection);
+        if (bKnockbackEnabled)
+        {
+            LeftArrow->SetKnockback(true);
+            RightArrow->SetKnockback(true);
+        }
     }
 }
 void APlayerCharacter::ReloadArrow()
@@ -460,6 +469,9 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
             break;
         case EUpgradeType::BombThrow:
             StartLaunchingBombs();
+            break;
+        case EUpgradeType::KnockbackArrows:
+            bKnockbackEnabled = true;
             break;
         case EUpgradeType::Damage:
             WeaponDamage += 5;

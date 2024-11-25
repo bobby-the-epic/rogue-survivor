@@ -78,6 +78,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere)
     bool bBombUpgradeEnabled = false;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bKnockbackEnabled = false;
+
     UPROPERTY()
     UEventBus* EventBus;
 
