@@ -11,18 +11,22 @@ class ROGUE_API AArrowProjectile : public AActor
     GENERATED_BODY()
 
   public:
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY(VisibleDefaultsOnly)
     UProjectileMovementComponent* ProjectileMovementComponent;
 
   private:
-    UPROPERTY(VisibleDefaultsOnly)
-    UStaticMeshComponent* ArrowMesh;
-
     UPROPERTY(VisibleAnywhere)
     int32 WeaponDamage = 5;
 
+    UPROPERTY(VisibleAnywhere)
+    bool bHasKnockback = false;
+
+    UPROPERTY(VisibleDefaultsOnly)
+    UStaticMeshComponent* ArrowMesh;
+
   public:
     AArrowProjectile();
+    void SetKnockback(bool KnockbackValue) { bHasKnockback = KnockbackValue; }
 
     FORCEINLINE void SetWeaponDamage(int32 Damage) { WeaponDamage = Damage; }
 
