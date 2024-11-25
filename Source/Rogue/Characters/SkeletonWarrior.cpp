@@ -69,6 +69,7 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
         ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         AIController->RunBehaviorTree(BehaviorTree);
         AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
+        IsSpawning = false;
     }
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
@@ -92,6 +93,13 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         return;
     }
     HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+}
+void ASkeletonWarrior::Knockback()
+{
+    if (!IsSpawning)
+    {
+        LaunchCharacter(-GetActorForwardVector() * 25000, true, true);
+    }
 }
 void ASkeletonWarrior::UpdateHealthBarRotation(FVector CameraLocation)
 {

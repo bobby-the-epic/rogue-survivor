@@ -31,6 +31,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool IsPlayerDead = false;
 
+    UPROPERTY(VisibleAnywhere)
+    bool IsSpawning = true;
+
     UPROPERTY()
     UEventBus* EventBus;
 
@@ -61,6 +64,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
   public:
     ASkeletonWarrior();
     virtual void TakeDamage(int32 Damage) override;
+    virtual void Knockback() override;
     void Die();
 
   protected:
