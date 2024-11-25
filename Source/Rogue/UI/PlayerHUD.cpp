@@ -8,6 +8,7 @@
 
 void UPlayerHUD::NativeConstruct()
 {
+    Super::NativeConstruct();
     GameTimer = FTimespan(0, TimerMinutes, TimerSeconds);
 }
 void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)

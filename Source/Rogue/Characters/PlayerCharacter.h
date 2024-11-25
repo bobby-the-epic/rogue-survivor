@@ -22,6 +22,7 @@ class UEventBus;
 class UPauseMenu;
 class UDeathMenu;
 struct FInputActionValue;
+class UGameOverMenu;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -64,6 +65,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     bool bWeaponReady = true;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+    bool bGameOver = false;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bFullAutoFire = false;
@@ -130,6 +134,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY()
     FTimerHandle GameTimer;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<UGameOverMenu> GameOverMenuClass;
+
+    UPROPERTY()
+    UGameOverMenu* GameOverMenu;
 
     /** Camera boom positioning the camera behind the character */
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -221,5 +231,5 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     void UpdateTimer() { PlayerHUD->UpdateTimer(); }
 
     UFUNCTION()
-    void StopTimer() { GetWorldTimerManager().ClearTimer(GameTimer); }
+    void GameOver();
 };

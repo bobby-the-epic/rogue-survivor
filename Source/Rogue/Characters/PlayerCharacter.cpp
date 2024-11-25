@@ -24,6 +24,7 @@
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/DeathMenu.h"
+#include "Rogue/UI/GameOverMenu.h"
 #include "Rogue/UI/PauseMenu.h"
 #include "Rogue/UI/PlayerHUD.h"
 #include "Rogue/UI/UpgradeScreen.h"
@@ -133,7 +134,7 @@ void APlayerCharacter::BeginPlay()
     }
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
-    EventBus->OnGameOverDelegate.AddDynamic(this, &APlayerCharacter::StopTimer);
+    EventBus->OnGameOverDelegate.AddDynamic(this, &APlayerCharacter::GameOver);
     GetWorldTimerManager().SetTimer(GameTimer, this, &APlayerCharacter::UpdateTimer, 1.0f, true);
 }
 void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -154,7 +155,7 @@ void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
         PauseMenu = nullptr;
     }
     EventBus->OnCollectiblePickupDelegate.RemoveDynamic(this, &APlayerCharacter::AddExperience);
-    EventBus->OnGameOverDelegate.RemoveDynamic(this, &APlayerCharacter::StopTimer);
+    EventBus->OnGameOverDelegate.RemoveDynamic(this, &APlayerCharacter::GameOver);
     GetWorldTimerManager().ClearAllTimersForObject(this);
 
     Super::EndPlay(EndPlayReason);
@@ -343,18 +344,18 @@ void APlayerCharacter::StopFiring()
 }
 void APlayerCharacter::RotateCharacter()
 {
-/*
+    /*
         Rotates the character in the direction the camera is facing when
         the player shoots without aiming (AKA hip fire).
-*/
+    */
 
     FTimerHandle TimerHandle;
     GetWorldTimerManager().SetTimer(TimerHandle, this, &APlayerCharacter::ResetRotation, 0.35f, false);
 }
 void APlayerCharacter::ResetRotation()
 {
-            GetCharacterMovement()->bOrientRotationToMovement = true;
-            GetCharacterMovement()->bUseControllerDesiredRotation = false;
+    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->bUseControllerDesiredRotation = false;
 }
 void APlayerCharacter::TakeDamage(int32 Damage)
 {
@@ -375,6 +376,7 @@ void APlayerCharacter::StartDeathState()
     EventBus->OnPlayerDeathDelegate.Broadcast();
     DisableInput(Cast<APlayerController>(GetController()));
     GetWorldTimerManager().ClearAllTimersForObject(this);
+    PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
     //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
     //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.
     FVector DeathCamLocation = FVector(175, 60, 200) + FollowCamera->GetComponentLocation();
@@ -455,5 +457,19 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
         default:
             UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
             break;
+    }
+}
+void APlayerCharacter::GameOver()
+{
+    GetWorldTimerManager().ClearTimer(GameTimer);
+    if (GameOverMenuClass)
+    {
+        PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+        APlayerController* PlayerController = GetController<APlayerController>();
+        GameOverMenu = CreateWidget<UGameOverMenu>(PlayerController, GameOverMenuClass);
+        GameOverMenu->AddToViewport();
+        DisableInput(PlayerController);
+        GetWorldTimerManager().ClearAllTimersForObject(this);
+        PlayerController->SetShowMouseCursor(true);
     }
 }
