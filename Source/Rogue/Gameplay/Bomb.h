@@ -35,6 +35,7 @@ class ROGUE_API ABomb : public AActor
   public:
     ABomb();
     void LaunchInDirection(const FVector& Direction) const;
+    void SetWeaponDamage(int32 NewDamage) { WeaponDamage = NewDamage; }
 
   protected:
     void BeginPlay() override;

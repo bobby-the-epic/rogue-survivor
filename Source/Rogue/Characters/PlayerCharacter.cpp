@@ -423,14 +423,21 @@ void APlayerCharacter::LaunchBombs()
     SpawnLocation.Z += 30;
     FVector ForwardDirection = GetActorForwardVector();
     FVector RightDirection = GetActorRightVector();
+    // Spawn the bombs
     ABomb* BombLeft = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
     ABomb* BombRight = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
     ABomb* BombForward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
     ABomb* BombBackward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+    // Launch the bombs in their specific direction
     BombLeft->LaunchInDirection(-RightDirection + FVector::UpVector);
     BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
     BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
     BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
+    // Set bomb damage
+    BombLeft->SetWeaponDamage(WeaponDamage);
+    BombRight->SetWeaponDamage(WeaponDamage);
+    BombForward->SetWeaponDamage(WeaponDamage);
+    BombBackward->SetWeaponDamage(WeaponDamage);
 }
 void APlayerCharacter::TogglePauseMenu()
 {
