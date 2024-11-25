@@ -120,6 +120,10 @@ void ASkeletonWarrior::Die()
     if (!IsDead)
     {
         IsDead = true;
+        if (GetCurrentMontage())
+        {
+            GetMesh()->GetAnimInstance()->StopAllMontages(0.0f);
+        }
         EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
         HealthBarWidgetComponent->DestroyComponent();
         SetActorEnableCollision(false);
