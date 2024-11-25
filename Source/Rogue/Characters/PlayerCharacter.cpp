@@ -454,6 +454,18 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
         case EUpgradeType::BombThrow:
             StartLaunchingBombs();
             break;
+        case EUpgradeType::Damage:
+            WeaponDamage += 5;
+            break;
+        case EUpgradeType::Health:
+            // Increase max health by 10 and fully heal the player.
+            MaxHealth += 10;
+            CurrentHealth = MaxHealth;
+            PlayerHUD->SetHealth(CurrentHealth, MaxHealth);
+            break;
+        case EUpgradeType::MovementSpeed:
+            GetCharacterMovement()->MaxWalkSpeed += 25.0f;
+            break;
         default:
             UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
             break;
