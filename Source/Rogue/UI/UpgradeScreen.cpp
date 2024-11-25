@@ -86,7 +86,7 @@ void UUpgradeScreen::ChooseUpgrade(EButtonPos ButtonPos)
     // Removes the upgrades that would be useless if chosen more than once.
     if (UpgradeType == EUpgradeType::FullAutoFire || UpgradeType == EUpgradeType::Multishot ||
         UpgradeType == EUpgradeType::BombThrow || UpgradeType == EUpgradeType::KnockbackArrows ||
-        UpgradeType == EUpgradeType::SwordDefense)
+        UpgradeType == EUpgradeType::AxeDefense)
     {
         PresentedUpgrades.RemoveAt(ButtonPos);
     }

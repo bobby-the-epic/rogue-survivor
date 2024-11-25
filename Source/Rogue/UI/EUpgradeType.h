@@ -6,7 +6,7 @@ enum class EUpgradeType : uint8
     FullAutoFire,
     Multishot,
     BombThrow,
-    SwordDefense,
+    AxeDefense,
     KnockbackArrows,
     Damage,
     Health,
