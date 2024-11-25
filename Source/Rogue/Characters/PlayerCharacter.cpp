@@ -428,25 +428,24 @@ void APlayerCharacter::StartLaunchingBombs()
 }
 void APlayerCharacter::LaunchBombs()
 {
+    // Spawn the bomb above the player character's head
     FVector SpawnLocation = GetActorLocation();
     SpawnLocation.Z += 30;
     FVector ForwardDirection = GetActorForwardVector();
     FVector RightDirection = GetActorRightVector();
-    // Spawn the bombs
-    ABomb* BombLeft = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
-    ABomb* BombRight = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
-    ABomb* BombForward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
-    ABomb* BombBackward = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
-    // Launch the bombs in their specific direction
-    BombLeft->LaunchInDirection(-RightDirection + FVector::UpVector);
-    BombRight->LaunchInDirection(RightDirection + FVector::UpVector);
-    BombForward->LaunchInDirection(ForwardDirection + FVector::UpVector);
-    BombBackward->LaunchInDirection(-ForwardDirection + FVector::UpVector);
-    // Set bomb damage
-    BombLeft->SetWeaponDamage(WeaponDamage);
-    BombRight->SetWeaponDamage(WeaponDamage);
-    BombForward->SetWeaponDamage(WeaponDamage);
-    BombBackward->SetWeaponDamage(WeaponDamage);
+    // Set the directions for the bomb to launch in
+    FVector Directions[4];
+    Directions[0] = ForwardDirection;
+    Directions[1] = -ForwardDirection;
+    Directions[2] = RightDirection;
+    Directions[3] = -RightDirection;
+
+    for (int Counter = 0; Counter < 4; Counter++)
+    {
+        ABomb* Bomb = GetWorld()->SpawnActor<ABomb>(BombClass, SpawnLocation, FRotator::ZeroRotator);
+        Bomb->LaunchInDirection(Directions[Counter] + FVector::UpVector);
+        Bomb->SetWeaponDamage(WeaponDamage);
+    }
 }
 void APlayerCharacter::TogglePauseMenu()
 {
