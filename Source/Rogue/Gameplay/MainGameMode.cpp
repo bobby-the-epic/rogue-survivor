@@ -19,6 +19,7 @@ void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
     EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &AMainGameMode::StopSpawningSkeletons);
     EventBus->OnGameOverDelegate.RemoveDynamic(this, &AMainGameMode::GameOver);
+    GetWorldTimerManager().ClearAllTimersForObject(this);
     Super::EndPlay(EndPlayReason);
 }
 void AMainGameMode::SpawnSkeleton() const
@@ -42,12 +43,8 @@ void AMainGameMode::GameOver()
     // Destroy remaining skeletons
     TArray<AActor*> RemainingSkeletons;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), SkeletonClass, RemainingSkeletons);
-    for (AActor* Actor : RemainingSkeletons)
+    for (int Counter = 0; Counter < RemainingSkeletons.Num(); Counter++)
     {
-        ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(Actor);
-        if (Skeleton)
-        {
-            Skeleton->Die();
-        }
+        RemainingSkeletons[Counter]->Destroy();
     }
 }
