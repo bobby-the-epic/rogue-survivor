@@ -17,4 +17,5 @@ class ROGUE_API ICombatInterface
 
   public:
     virtual void TakeDamage(int32 Damage) {}
+    virtual void Knockback() {}
 };
