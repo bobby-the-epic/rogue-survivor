@@ -9,6 +9,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "CoreMinimal.h"
+#include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
@@ -286,18 +287,30 @@ void APlayerCharacter::Attack()
 }
 void APlayerCharacter::FireArrow()
 {
-    FVector CameraLocation = CameraBoom->GetSocketLocation(CameraBoom->SocketName);
-    FRotator CameraRotation = CameraBoom->GetSocketRotation(CameraBoom->SocketName);
+    FVector CameraLocation;
+    FRotator CameraRotation;
+    Controller->GetPlayerViewPoint(CameraLocation, CameraRotation);
     FVector LaunchDirection;
-    FVector MiddleArrowLocation = MiddleArrowPos->GetComponentLocation();
-    FRotator MiddleArrowRotation = MiddleArrowPos->GetComponentRotation();
+    const FVector MiddleArrowLocation = MiddleArrowPos->GetComponentLocation();
+    const FRotator MiddleArrowRotation = MiddleArrowPos->GetComponentRotation();
 
     // Line trace
-    FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 1000);
-    FCollisionQueryParams TraceParams(FName(TEXT("LineTrace")), true, this);
+    const FVector TraceEnd = CameraLocation + (CameraRotation.Vector() * 10000);
+    const FCollisionQueryParams TraceParams(FName("LineTrace"), true, this);
     FHitResult HitResult;
     GetWorld()->LineTraceSingleByChannel(HitResult, CameraLocation, TraceEnd, ECC_Visibility, TraceParams);
-    LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
+    const FVector HitDirection = (HitResult.ImpactPoint - GetActorLocation()).GetSafeNormal();
+
+    // If the line trace hits an enemy, and the enemy is not behind the player,
+    // then the arrow is launched towards the hit enemy.
+    if (HitResult.bBlockingHit && FVector::DotProduct(GetActorForwardVector(), HitDirection) > 0)
+    {
+        LaunchDirection = (HitResult.ImpactPoint - MiddleArrowLocation).GetSafeNormal();
+    }
+    else
+    {
+        LaunchDirection = (TraceEnd - MiddleArrowLocation).GetSafeNormal();
+    }
     FActorSpawnParameters SpawnParams;
     SpawnParams.Instigator = this;
     if (!bFullAutoFire)
@@ -316,13 +329,13 @@ void APlayerCharacter::FireArrow()
     if (bMultishotEnabled)
     {
         // Spawns the arrows with the arrow components' locations and rotations
-        FVector LeftArrowLocation = LeftArrowPos->GetComponentLocation();
-        FVector RightArrowLocation = RightArrowPos->GetComponentLocation();
-        FRotator LeftArrowRotation = LeftArrowPos->GetComponentRotation();
-        FRotator RightArrowRotation = RightArrowPos->GetComponentRotation();
+        const FVector LeftArrowLocation = LeftArrowPos->GetComponentLocation();
+        const FVector RightArrowLocation = RightArrowPos->GetComponentLocation();
+        const FRotator LeftArrowRotation = LeftArrowPos->GetComponentRotation();
+        const FRotator RightArrowRotation = RightArrowPos->GetComponentRotation();
         // Just rotates the launch direction a little so they fire in different directions
-        FVector LeftDirection = LaunchDirection.RotateAngleAxis(-25, FVector::UpVector);
-        FVector RightDirection = LaunchDirection.RotateAngleAxis(25, FVector::UpVector);
+        const FVector LeftDirection = LaunchDirection.RotateAngleAxis(-25, FVector::UpVector);
+        const FVector RightDirection = LaunchDirection.RotateAngleAxis(25, FVector::UpVector);
         AArrowProjectile* LeftArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, LeftArrowLocation,
                                                                                LeftArrowRotation, SpawnParams);
         AArrowProjectile* RightArrow = GetWorld()->SpawnActor<AArrowProjectile>(ProjectileClass, RightArrowLocation,
