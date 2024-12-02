@@ -8,8 +8,6 @@
 
 AAxeDefense::AAxeDefense()
 {
-    // TODO: make an actor blueprint for the axe with a rotating component,
-    // and then add 4 of those to this class
     PrimaryActorTick.bCanEverTick = false;
     SceneComponent = CreateDefaultSubobject<USceneComponent>("SceneComponent");
     RootComponent = SceneComponent;
