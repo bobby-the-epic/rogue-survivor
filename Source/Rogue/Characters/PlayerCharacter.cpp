@@ -21,6 +21,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Logging/StructuredLog.h"
 #include "Rogue/Gameplay/ArrowProjectile.h"
+#include "Rogue/Gameplay/AxeDefense.h"
 #include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/MainGameMode.h"
@@ -482,11 +483,20 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
         case EUpgradeType::BombThrow:
             StartLaunchingBombs();
             break;
+        case EUpgradeType::AxeDefense:
+            AxeDefense =
+                GetWorld()->SpawnActor<AAxeDefense>(AxeDefenseClass, GetActorLocation(), FRotator::ZeroRotator);
+            AxeDefense->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+            break;
         case EUpgradeType::KnockbackArrows:
             bKnockbackEnabled = true;
             break;
         case EUpgradeType::Damage:
             WeaponDamage += 5;
+            if (AxeDefense)
+            {
+                AxeDefense->SetWeaponDamage(WeaponDamage);
+            }
             break;
         case EUpgradeType::Health:
             // Increase max health by 10 and fully heal the player.

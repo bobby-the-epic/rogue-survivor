@@ -23,6 +23,7 @@ class UPauseMenu;
 class UDeathMenu;
 struct FInputActionValue;
 class UGameOverMenu;
+class AAxeDefense;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -110,6 +111,12 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(VisibleDefaultsOnly)
     UArrowComponent* RightArrowPos;
+
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AAxeDefense> AxeDefenseClass;
+
+    UPROPERTY()
+    AAxeDefense* AxeDefense;
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<UPlayerHUD> PlayerHUDClass;
