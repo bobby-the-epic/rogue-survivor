@@ -144,6 +144,6 @@ void ASkeletonWarrior::Die()
 void ASkeletonWarrior::SpawnExperienceOrb()
 {
     FVector SpawnLocation = GetActorLocation();
-    SpawnLocation.Z = 0;
+    SpawnLocation.Z -= 50;
     GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
 }
