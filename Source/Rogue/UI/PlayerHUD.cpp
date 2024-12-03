@@ -1,5 +1,4 @@
 #include "PlayerHUD.h"
-#include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/Timespan.h"
@@ -10,14 +9,6 @@ void UPlayerHUD::NativeConstruct()
 {
     Super::NativeConstruct();
     GameTimer = FTimespan(0, TimerMinutes, TimerSeconds);
-}
-void UPlayerHUD::SetHealth(float CurrentHealth, float MaxHealth)
-{
-    HealthBar->SetPercent(CurrentHealth / MaxHealth);
-}
-void UPlayerHUD::SetExperience(float CurrentExp, float MaxExp)
-{
-    ExperienceBar->SetPercent(CurrentExp / MaxExp);
 }
 void UPlayerHUD::UpdateTimer()
 {

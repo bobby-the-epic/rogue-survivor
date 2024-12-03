@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Blueprint/UserWidget.h"
+#include "Components/ProgressBar.h"
 #include "CoreMinimal.h"
 #include "PlayerHUD.generated.h"
 
-class UProgressBar;
 class UImage;
 class UTextBlock;
 struct FTimespan;
@@ -34,9 +34,13 @@ class ROGUE_API UPlayerHUD : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     UTextBlock* TimerText;
 
+    UPROPERTY(Transient, meta = (BindWidgetAnim))
+    UWidgetAnimation* DamageFlash;
+
   public:
     virtual void NativeConstruct() override;
-    void SetHealth(float CurrentHealth, float MaxHealth);
-    void SetExperience(float CurrentExp, float MaxExp);
+    void SetHealth(float CurrentHealth, float MaxHealth) { HealthBar->SetPercent(CurrentHealth / MaxHealth); }
+    void SetExperience(float CurrentExp, float MaxExp) { ExperienceBar->SetPercent(CurrentExp / MaxExp); }
     void UpdateTimer();
+    void PlayDamageAnimation() { PlayAnimation(DamageFlash); }
 };

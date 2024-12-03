@@ -388,6 +388,7 @@ void APlayerCharacter::TakeDamage(int32 Damage)
     }
     CurrentHealth -= Damage;
     PlayerHUD->SetHealth(CurrentHealth, MaxHealth);
+    PlayerHUD->PlayDamageAnimation();
     if (CurrentHealth <= 0)
     {
         StartDeathState();
