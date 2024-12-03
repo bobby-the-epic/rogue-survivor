@@ -41,6 +41,9 @@ class ROGUE_API AAxeDefense : public AActor
     UPROPERTY(VisibleDefaultsOnly)
     USphereComponent* SphereCollider;
 
+    UPROPERTY()
+    ACharacter* Player;
+
   public:
     AAxeDefense();
     void SetWeaponDamage(int32 NewDamage) { WeaponDamage = NewDamage; }
@@ -52,4 +55,7 @@ class ROGUE_API AAxeDefense : public AActor
   private:
     UFUNCTION()
     void DealDamage();
+
+    UFUNCTION()
+    void UpdateLocation(float DeltaSeconds, FVector OldLocation, FVector OldVelocity) { SetActorLocation(OldLocation); }
 };

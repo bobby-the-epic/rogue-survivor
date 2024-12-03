@@ -4,6 +4,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/RotatingMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
 
 AAxeDefense::AAxeDefense()
@@ -27,15 +28,18 @@ void AAxeDefense::BeginPlay()
 {
     Super::BeginPlay();
     GetWorldTimerManager().SetTimer(DamageTimer, this, &AAxeDefense::DealDamage, 1.5f, true);
+    Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+    Player->OnCharacterMovementUpdated.AddDynamic(this, &AAxeDefense::UpdateLocation);
 }
 void AAxeDefense::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     GetWorldTimerManager().ClearTimer(DamageTimer);
+    Player->OnCharacterMovementUpdated.RemoveDynamic(this, &AAxeDefense::UpdateLocation);
     Super::EndPlay(EndPlayReason);
 }
 void AAxeDefense::DealDamage()
 {
-    // Deals damage to overlapping actors
+    // Deals damage to overlapping skeleton warriors
 
     TArray<AActor*> HitActors;
     SphereCollider->GetOverlappingActors(HitActors, ASkeletonWarrior::StaticClass());

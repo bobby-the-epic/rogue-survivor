@@ -486,7 +486,6 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
         case EUpgradeType::AxeDefense:
             AxeDefense =
                 GetWorld()->SpawnActor<AAxeDefense>(AxeDefenseClass, GetActorLocation(), FRotator::ZeroRotator);
-            AxeDefense->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
             break;
         case EUpgradeType::KnockbackArrows:
             bKnockbackEnabled = true;
