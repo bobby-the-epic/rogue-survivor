@@ -119,6 +119,9 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     AAxeDefense* AxeDefense;
 
     UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AActor> LevelUpEffectClass;
+
+    UPROPERTY(EditDefaultsOnly)
     TSubclassOf<UPlayerHUD> PlayerHUDClass;
 
     UPROPERTY()

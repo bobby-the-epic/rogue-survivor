@@ -511,6 +511,7 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
             UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
             break;
     }
+    GetWorld()->SpawnActor<AActor>(LevelUpEffectClass, GetActorLocation(), FRotator::ZeroRotator);
 }
 void APlayerCharacter::GameOver()
 {
