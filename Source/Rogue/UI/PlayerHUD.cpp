@@ -3,12 +3,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "Misc/Timespan.h"
 #include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/Gameplay/MainGameInstance.h"
 #include "Rogue/Gameplay/MainGameMode.h"
 
 void UPlayerHUD::NativeConstruct()
 {
     Super::NativeConstruct();
-    GameTimer = FTimespan(0, TimerMinutes, TimerSeconds);
+    // Initialize the timer
+    GameTimer = FTimespan::FromMinutes(GetGameInstance<UMainGameInstance>()->GetTimerMinutes());
+    FString TimerString = GameTimer.ToString(TEXT("%m:%s"));
+    TimerString.RemoveAt(0, 1, true);
+    TimerText->SetText(FText::FromString(TimerString));
 }
 void UPlayerHUD::UpdateTimer()
 {
