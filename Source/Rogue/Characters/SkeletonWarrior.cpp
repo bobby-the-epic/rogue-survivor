@@ -147,3 +147,9 @@ void ASkeletonWarrior::SpawnExperienceOrb()
     SpawnLocation.Z -= 50;
     GetWorld()->SpawnActor<AExperienceOrb>(ExperienceOrbBP, SpawnLocation, FRotator::ZeroRotator);
 }
+void ASkeletonWarrior::SetHealth(int32 NewHealth)
+{
+    MaxHealth = NewHealth;
+    CurrentHealth = NewHealth;
+    HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+}

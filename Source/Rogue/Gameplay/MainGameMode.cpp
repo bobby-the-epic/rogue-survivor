@@ -10,6 +10,7 @@ void AMainGameMode::BeginPlay()
     Super::BeginPlay();
 
     GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 3.0f, true);
+    GetWorldTimerManager().SetTimer(StatIncreaseTimerHandle, this, &AMainGameMode::IncreaseSkeletonStats, 60.0f, true);
     EventBus = NewObject<UEventBus>();
     EventBus->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
     EventBus->OnGameOverDelegate.AddDynamic(this, &AMainGameMode::GameOver);
@@ -32,6 +33,8 @@ void AMainGameMode::SpawnSkeleton() const
     FRotator SpawnRotation = (PlayerLocation - RandomPoint).GetSafeNormal().Rotation();
     ASkeletonWarrior* Skeleton =
         GetWorld()->SpawnActor<ASkeletonWarrior>(SkeletonClass, RandomPoint, SpawnRotation, SpawnParams);
+    Skeleton->SetWeaponDamage(SkeletonWeaponDamage);
+    Skeleton->SetHealth(SkeletonHealth);
 }
 void AMainGameMode::StopSpawningSkeletons()
 {
@@ -46,5 +49,20 @@ void AMainGameMode::GameOver()
     for (int Counter = 0; Counter < RemainingSkeletons.Num(); Counter++)
     {
         RemainingSkeletons[Counter]->Destroy();
+    }
+}
+void AMainGameMode::IncreaseSkeletonStats()
+{
+    SkeletonWeaponDamage += 2;
+    SkeletonHealth += 30;
+    // Gets all the skeletons in the level and increases their stats
+    TArray<AActor*> Skeletons;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), SkeletonClass, Skeletons);
+    for (AActor* Actor : Skeletons)
+    {
+        ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(Actor);
+        Skeleton->SetHealth(SkeletonHealth);
+        Skeleton->SetWeaponDamage(SkeletonWeaponDamage);
+        Skeleton->SpawnLevelUpEffect();
     }
 }

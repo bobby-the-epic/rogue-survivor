@@ -12,11 +12,20 @@ class AMainGameMode : public AGameModeBase
 {
     GENERATED_BODY()
 
+    UPROPERTY(VisibleAnywhere)
+    int32 SkeletonWeaponDamage = 5;
+
+    UPROPERTY(VisibleAnywhere)
+    int32 SkeletonHealth = 30;
+
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<class ASkeletonWarrior> SkeletonClass;
 
     UPROPERTY()
     FTimerHandle SpawnTimerHandle;
+
+    UPROPERTY()
+    FTimerHandle StatIncreaseTimerHandle;
 
     UPROPERTY()
     UEventBus* EventBus;
@@ -40,4 +49,7 @@ class AMainGameMode : public AGameModeBase
 
     UFUNCTION()
     void GameOver();
+
+    UFUNCTION()
+    void IncreaseSkeletonStats();
 };

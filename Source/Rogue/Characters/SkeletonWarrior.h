@@ -16,13 +16,13 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(VisibleAnywhere)
     int32 WeaponDamage = 5;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(VisibleAnywhere)
     int32 CurrentHealth = 30;
 
-    UPROPERTY(EditDefaultsOnly)
+    UPROPERTY(VisibleAnywhere)
     int32 MaxHealth = 30;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -61,11 +61,20 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AExperienceOrb> ExperienceOrbBP;
 
+    UPROPERTY(EditDefaultsOnly)
+    TSubclassOf<AActor> LevelUpEffectClass;
+
   public:
     ASkeletonWarrior();
     virtual void TakeDamage(int32 Damage) override;
     virtual void Knockback() override;
     void Die();
+    void SetWeaponDamage(int32 NewDamage) { WeaponDamage = NewDamage; }
+    void SetHealth(int32 NewHealth);
+    void SpawnLevelUpEffect()
+    {
+        GetWorld()->SpawnActor<AActor>(LevelUpEffectClass, GetActorLocation(), FRotator::ZeroRotator);
+    }
 
   protected:
     virtual void BeginPlay() override;
