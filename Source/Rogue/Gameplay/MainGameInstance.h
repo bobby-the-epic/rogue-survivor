@@ -14,4 +14,7 @@ class ROGUE_API UMainGameInstance : public UGameInstance
 
   public:
     int32 GetTimerMinutes() const { return TimerMinutes; }
+
+    UFUNCTION(BlueprintCallable)
+    void SetTimerMinutes(int32 NewMinutes) { TimerMinutes = NewMinutes; }
 };
