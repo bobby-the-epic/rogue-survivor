@@ -161,7 +161,9 @@ void ASkeletonWarrior::StartEmissiveColorBlend(const FLinearColor& StartLerpColo
 {
     StartColor = StartLerpColor;
     EndColor = EndLerpColor;
-    GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
+    ElapsedTime = 0;
+    LerpValue = 0;
+    DamageMaterialTimer = GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
 }
 void ASkeletonWarrior::BlendEmissiveColor()
 {
@@ -186,5 +188,5 @@ void ASkeletonWarrior::BlendEmissiveColor()
         GetWorldTimerManager().ClearTimer(DamageMaterialTimer);
         return;
     }
-    GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
+    DamageMaterialTimer = GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
 }
