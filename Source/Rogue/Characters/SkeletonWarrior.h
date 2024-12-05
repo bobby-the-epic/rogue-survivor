@@ -10,11 +10,18 @@ class UEnemyHealthBar;
 class UBehaviorTree;
 class AExperienceOrb;
 class UEventBus;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 {
     GENERATED_BODY()
+
+    float LerpValue = 0.0f;
+    float ElapsedTime = 0.0f;
+    FTimerHandle DamageMaterialTimer;
+    FLinearColor DamagedColor = FLinearColor(FVector4(0.2));
+    FLinearColor StartColor, EndColor;
 
     UPROPERTY(VisibleAnywhere)
     int32 WeaponDamage = 5;
@@ -64,6 +71,9 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AActor> LevelUpEffectClass;
 
+    UPROPERTY()
+    UMaterialInstanceDynamic* DamageMaterial;
+
   public:
     ASkeletonWarrior();
     bool GetIsDead() const { return IsDead; }
@@ -83,6 +93,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
   private:
     void SpawnExperienceOrb();
+    void StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor);
 
     UFUNCTION()
     void UpdateHealthBarRotation(FVector CameraLocation);
@@ -101,4 +112,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
     UFUNCTION()
     void Celebrate();
+
+    UFUNCTION()
+    void BlendEmissiveColor();
 };

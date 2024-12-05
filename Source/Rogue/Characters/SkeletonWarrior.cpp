@@ -5,6 +5,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/ExperienceOrb.h"
 #include "Rogue/Gameplay/MainGameMode.h"
@@ -45,6 +46,8 @@ void ASkeletonWarrior::BeginPlay()
         GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::MoveMeshUp, 0.2f, false);
         GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
     }
+    DamageMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
+    GetMesh()->SetMaterial(0, DamageMaterial);
 }
 void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
@@ -86,6 +89,7 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         HealthBarWidgetComponent->SetVisibility(true);
     }
     CurrentHealth -= Damage;
+    StartEmissiveColorBlend(FLinearColor::Black, DamagedColor);
     if (CurrentHealth <= 0)
     {
         Die();
@@ -152,4 +156,35 @@ void ASkeletonWarrior::SetHealth(int32 NewHealth)
     MaxHealth = NewHealth;
     CurrentHealth = NewHealth;
     HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+}
+void ASkeletonWarrior::StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor)
+{
+    StartColor = StartLerpColor;
+    EndColor = EndLerpColor;
+    GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
+}
+void ASkeletonWarrior::BlendEmissiveColor()
+{
+    LerpValue = FMath::Lerp(StartColor.R, EndColor.R, ElapsedTime);
+    DamageMaterial->SetVectorParameterValue("EmissiveColor", FVector4(LerpValue));
+    ElapsedTime += GetWorld()->GetDeltaSeconds() * 7;
+
+    if (EndColor == DamagedColor && LerpValue >= EndColor.R)
+    {
+        // Starts blending back to normal color
+        LerpValue = 0.0f;
+        ElapsedTime = 0.0f;
+        GetWorldTimerManager().ClearTimer(DamageMaterialTimer);
+        StartEmissiveColorBlend(DamagedColor, FLinearColor::Black);
+        return;
+    }
+    else if (EndColor == FColor::Black && LerpValue <= EndColor.R)
+    {
+        // Stops the blend
+        LerpValue = 0.0f;
+        ElapsedTime = 0.0f;
+        GetWorldTimerManager().ClearTimer(DamageMaterialTimer);
+        return;
+    }
+    GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
 }
