@@ -66,6 +66,7 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
   public:
     ASkeletonWarrior();
+    bool GetIsDead() const { return IsDead; }
     virtual void TakeDamage(int32 Damage) override;
     virtual void Knockback() override;
     void Die();

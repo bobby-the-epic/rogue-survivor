@@ -61,6 +61,10 @@ void AMainGameMode::IncreaseSkeletonStats()
     for (AActor* Actor : Skeletons)
     {
         ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(Actor);
+        if (Skeleton->GetIsDead())
+        {
+            continue;
+        }
         Skeleton->SetHealth(SkeletonHealth);
         Skeleton->SetWeaponDamage(SkeletonWeaponDamage);
         Skeleton->SpawnLevelUpEffect();
