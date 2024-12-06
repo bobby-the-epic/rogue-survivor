@@ -49,10 +49,10 @@ class AHumanoid : public ACharacter
     USoundBase* HitSound;
 
     UPROPERTY(EditDefaultsOnly)
-    USoundBase* FootStepSound;
+    USoundBase* FootstepSound;
 
     UPROPERTY(EditDefaultsOnly)
-    USoundBase* AttackingSound;
+    USoundBase* AttackSound;
 
   public:
     AHumanoid();
