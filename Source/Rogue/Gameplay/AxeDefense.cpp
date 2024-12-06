@@ -1,5 +1,4 @@
 #include "AxeDefense.h"
-#include "CombatInterface.h"
 #include "Components/ChildActorComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/SphereComponent.h"
@@ -47,8 +46,8 @@ void AAxeDefense::DealDamage()
     {
         for (int Counter = 0; Counter < HitActors.Num(); Counter++)
         {
-            ICombatInterface* DamagableActor = Cast<ICombatInterface>(HitActors[Counter]);
-            DamagableActor->TakeDamage(WeaponDamage);
+            ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(HitActors[Counter]);
+            Skeleton->TakeDamage(WeaponDamage);
         }
     }
 }

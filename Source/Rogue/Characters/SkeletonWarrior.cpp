@@ -5,7 +5,6 @@
 #include "Components/ProgressBar.h"
 #include "Components/WidgetComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Materials/MaterialInstanceDynamic.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/ExperienceOrb.h"
 #include "Rogue/Gameplay/MainGameMode.h"
@@ -24,6 +23,10 @@ ASkeletonWarrior::ASkeletonWarrior()
     WeaponCollider->SetupAttachment(GetMesh(), "handslot_r");
     HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>("HealthBarWidget");
     HealthBarWidgetComponent->SetupAttachment(RootComponent);
+
+    CurrentHealth = 30;
+    MaxHealth = 30;
+    WeaponDamage = 5;
 }
 void ASkeletonWarrior::BeginPlay()
 {
@@ -46,13 +49,11 @@ void ASkeletonWarrior::BeginPlay()
         GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::MoveMeshUp, 0.2f, false);
         GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ASkeletonWarrior::EndSpawning);
     }
-    DamageMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
-    GetMesh()->SetMaterial(0, DamageMaterial);
 }
 void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
     // Remove the function from the delegate when destroyed and not dead
-    if (!IsDead)
+    if (!bIsDead)
     {
         EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     }
@@ -66,18 +67,19 @@ void ASkeletonWarrior::EndSpawning(UAnimMontage* Montage, bool bInterrupted)
 {
     // Run the behavior tree and set the player blackboard key
     // when the spawn animation is done playing.
-    if (!IsPlayerDead && IsValid(this) && !IsDead)
+    if (!bIsPlayerDead && IsValid(this) && !bIsDead)
     {
         AAIController* AIController = Cast<AAIController>(GetController());
         ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
         AIController->RunBehaviorTree(BehaviorTree);
         AIController->GetBlackboardComponent()->SetValueAsObject(TEXT("Player"), Player);
-        IsSpawning = false;
+        bIsSpawning = false;
     }
 }
 void ASkeletonWarrior::TakeDamage(int32 Damage)
 {
-    if (IsDead)
+    Super::TakeDamage(Damage);
+    if (bIsDead)
     {
         // TakeDamage shouldn't be called when the actor is dead because collision
         // is disabled on death, but I left this here just in case.
@@ -89,7 +91,6 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         HealthBarWidgetComponent->SetVisibility(true);
     }
     CurrentHealth -= Damage;
-    StartEmissiveColorBlend(FLinearColor::Black, DamagedColor);
     if (CurrentHealth <= 0)
     {
         Die();
@@ -100,7 +101,7 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
 }
 void ASkeletonWarrior::Knockback()
 {
-    if (!IsSpawning)
+    if (!bIsSpawning)
     {
         LaunchCharacter(-GetActorForwardVector() * 25000, true, true);
     }
@@ -119,19 +120,19 @@ void ASkeletonWarrior::Attack() const
     ACharacter* Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
     if (WeaponCollider->IsOverlappingActor(Player))
     {
-        Cast<ICombatInterface>(Player)->TakeDamage(WeaponDamage);
+        Cast<AHumanoid>(Player)->TakeDamage(WeaponDamage);
     }
 }
 void ASkeletonWarrior::Celebrate()
 {
-    IsPlayerDead = true;
+    bIsPlayerDead = true;
     GetController()->Destroy();
 }
 void ASkeletonWarrior::Die()
 {
-    if (!IsDead)
+    if (!bIsDead)
     {
-        IsDead = true;
+        bIsDead = true;
         if (GetCurrentMontage())
         {
             GetMesh()->GetAnimInstance()->StopAllMontages(0.0f);
@@ -156,37 +157,4 @@ void ASkeletonWarrior::SetHealth(int32 NewHealth)
     MaxHealth = NewHealth;
     CurrentHealth = NewHealth;
     HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
-}
-void ASkeletonWarrior::StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor)
-{
-    StartColor = StartLerpColor;
-    EndColor = EndLerpColor;
-    ElapsedTime = 0;
-    LerpValue = 0;
-    DamageMaterialTimer = GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
-}
-void ASkeletonWarrior::BlendEmissiveColor()
-{
-    LerpValue = FMath::Lerp(StartColor.R, EndColor.R, ElapsedTime);
-    DamageMaterial->SetVectorParameterValue("EmissiveColor", FVector4(LerpValue));
-    ElapsedTime += GetWorld()->GetDeltaSeconds() * 7;
-
-    if (EndColor == DamagedColor && LerpValue >= EndColor.R)
-    {
-        // Starts blending back to normal color
-        LerpValue = 0.0f;
-        ElapsedTime = 0.0f;
-        GetWorldTimerManager().ClearTimer(DamageMaterialTimer);
-        StartEmissiveColorBlend(DamagedColor, FLinearColor::Black);
-        return;
-    }
-    else if (EndColor == FColor::Black && LerpValue <= EndColor.R)
-    {
-        // Stops the blend
-        LerpValue = 0.0f;
-        ElapsedTime = 0.0f;
-        GetWorldTimerManager().ClearTimer(DamageMaterialTimer);
-        return;
-    }
-    DamageMaterialTimer = GetWorldTimerManager().SetTimerForNextTick(this, &ASkeletonWarrior::BlendEmissiveColor);
 }

@@ -3,9 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "Humanoid.h"
 #include "Logging/LogMacros.h"
-#include "Rogue/Gameplay/CombatInterface.h"
 #include "Rogue/UI/EUpgradeType.h"
 #include "Rogue/UI/PlayerHUD.h"
 #include "PlayerCharacter.generated.h"
@@ -18,7 +17,6 @@ class AArrowProjectile;
 class UArrowComponent;
 class USphereComponent;
 class UUpgradeScreen;
-class UEventBus;
 class UPauseMenu;
 class UDeathMenu;
 struct FInputActionValue;
@@ -28,7 +26,7 @@ class AAxeDefense;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 UCLASS(config = Game)
-class APlayerCharacter : public ACharacter, public ICombatInterface
+class APlayerCharacter : public AHumanoid
 {
     GENERATED_BODY()
 
@@ -36,12 +34,6 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     float ZoomedInFOV;
     float ZoomedOutFOV;
     float ElapsedTime = 0;
-
-    UPROPERTY(EditDefaultsOnly)
-    int32 CurrentHealth = 100;
-
-    UPROPERTY(EditDefaultsOnly)
-    int32 MaxHealth = 100;
 
     UPROPERTY(VisibleAnywhere)
     int32 CurrentExperience = 0;
@@ -52,17 +44,11 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
     UPROPERTY(VisibleAnywhere)
     int32 Level = 1;
 
-    UPROPERTY(EditDefaultsOnly)
-    int32 WeaponDamage = 10;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bIsAiming = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     bool bUseWeapon = false;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool bIsDead = false;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
     bool bWeaponReady = true;
@@ -81,9 +67,6 @@ class APlayerCharacter : public ACharacter, public ICombatInterface
 
     UPROPERTY(VisibleAnywhere)
     bool bKnockbackEnabled = false;
-
-    UPROPERTY()
-    UEventBus* EventBus;
 
     UPROPERTY(VisibleDefaultsOnly)
     USphereComponent* SphereCollider;

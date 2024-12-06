@@ -1,5 +1,5 @@
 #include "ArrowProjectile.h"
-#include "CombatInterface.h"
+#include "Rogue/Characters/SkeletonWarrior.h"
 
 AArrowProjectile::AArrowProjectile()
 {
@@ -31,7 +31,7 @@ void AArrowProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAct
     if (OtherActor->IsA<APawn>())
     {
         Destroy();
-        ICombatInterface* HitActor = Cast<ICombatInterface>(OtherActor);
+        ASkeletonWarrior* HitActor = Cast<ASkeletonWarrior>(OtherActor);
         if (HitActor != nullptr)
         {
             if (bHasKnockback)

@@ -35,7 +35,7 @@ DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
 // APlayerCharacter
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter() : Super()
 {
     // Set size for collision capsule
     GetCapsuleComponent()->InitCapsuleSize(42.f, 55.0f);
@@ -382,6 +382,7 @@ void APlayerCharacter::ResetRotation()
 }
 void APlayerCharacter::TakeDamage(int32 Damage)
 {
+    Super::TakeDamage(Damage);
     if (bIsDead)
     {
         return;

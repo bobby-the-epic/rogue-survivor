@@ -1,5 +1,4 @@
 #include "Bomb.h"
-#include "CombatInterface.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "EventBus.h"
@@ -37,7 +36,7 @@ void ABomb::Explode()
     BlastRadius->GetOverlappingActors(HitActors, ASkeletonWarrior::StaticClass());
     for (AActor* HitActor : HitActors)
     {
-        ICombatInterface* Actor = Cast<ICombatInterface>(HitActor);
+        ASkeletonWarrior* Actor = Cast<ASkeletonWarrior>(HitActor);
         if (Actor != nullptr)
         {
             Actor->TakeDamage(WeaponDamage);

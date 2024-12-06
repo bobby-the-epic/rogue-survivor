@@ -1,48 +1,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Rogue/Gameplay/CombatInterface.h"
+#include "Humanoid.h"
 #include "SkeletonWarrior.generated.h"
 
 class UWidgetComponent;
 class UEnemyHealthBar;
 class UBehaviorTree;
 class AExperienceOrb;
-class UEventBus;
-class UMaterialInstanceDynamic;
 
 UCLASS()
-class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
+class ROGUE_API ASkeletonWarrior : public AHumanoid
 {
     GENERATED_BODY()
 
-    float LerpValue = 0.0f;
-    float ElapsedTime = 0.0f;
-    FTimerHandle DamageMaterialTimer;
-    FLinearColor DamagedColor = FLinearColor(FVector4(0.2));
-    FLinearColor StartColor, EndColor;
-
-    UPROPERTY(VisibleAnywhere)
-    int32 WeaponDamage = 5;
-
-    UPROPERTY(VisibleAnywhere)
-    int32 CurrentHealth = 30;
-
-    UPROPERTY(VisibleAnywhere)
-    int32 MaxHealth = 30;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool IsDead = false;
-
     UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    bool IsPlayerDead = false;
+    bool bIsPlayerDead = false;
 
     UPROPERTY(VisibleAnywhere)
-    bool IsSpawning = true;
-
-    UPROPERTY()
-    UEventBus* EventBus;
+    bool bIsSpawning = true;
 
     UPROPERTY(VisibleDefaultsOnly)
     UStaticMeshComponent* WeaponMesh;
@@ -71,14 +47,12 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AActor> LevelUpEffectClass;
 
-    UPROPERTY()
-    UMaterialInstanceDynamic* DamageMaterial;
-
+    
   public:
     ASkeletonWarrior();
-    bool GetIsDead() const { return IsDead; }
+    bool GetIsDead() const { return bIsDead; }
     virtual void TakeDamage(int32 Damage) override;
-    virtual void Knockback() override;
+    void Knockback();
     void Die();
     void SetWeaponDamage(int32 NewDamage) { WeaponDamage = NewDamage; }
     void SetHealth(int32 NewHealth);
@@ -93,7 +67,6 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
 
   private:
     void SpawnExperienceOrb();
-    void StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor);
 
     UFUNCTION()
     void UpdateHealthBarRotation(FVector CameraLocation);
@@ -113,6 +86,4 @@ class ROGUE_API ASkeletonWarrior : public ACharacter, public ICombatInterface
     UFUNCTION()
     void Celebrate();
 
-    UFUNCTION()
-    void BlendEmissiveColor();
-};
+    };
