@@ -27,6 +27,9 @@ class AMainGameMode : public AMainGameModeBase
     FTimerHandle StatIncreaseTimerHandle;
 
     UPROPERTY()
+    FTimerHandle HalftimeTimer;
+
+    UPROPERTY()
     UEventBus* EventBus;
 
     UPROPERTY()
@@ -51,4 +54,7 @@ class AMainGameMode : public AMainGameModeBase
 
     UFUNCTION()
     void IncreaseSkeletonStats();
+
+    UFUNCTION()
+    void IncreaseSpawnRate();
 };

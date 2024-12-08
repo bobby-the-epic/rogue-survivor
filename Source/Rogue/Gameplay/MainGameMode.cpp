@@ -1,6 +1,7 @@
 #include "MainGameMode.h"
 #include "EventBus.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainGameInstance.h"
 #include "NavigationSystem.h"
 #include "Rogue/Characters/PlayerCharacter.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
@@ -15,6 +16,10 @@ void AMainGameMode::BeginPlay()
     EventBus->OnPlayerDeathDelegate.AddDynamic(this, &AMainGameMode::StopSpawningSkeletons);
     EventBus->OnGameOverDelegate.AddDynamic(this, &AMainGameMode::GameOver);
     Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    // Increase the spawn rate of the skeletons when halftime is reached
+    const int32 TimerMinutes = GetGameInstance<UMainGameInstance>()->GetTimerMinutes();
+    const float Halftime = (static_cast<float>(TimerMinutes) / 2.0f) * 60.0f;
+    GetWorldTimerManager().SetTimer(HalftimeTimer, this, &AMainGameMode::IncreaseSpawnRate, Halftime, false);
 }
 void AMainGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
@@ -56,4 +61,8 @@ void AMainGameMode::IncreaseSkeletonStats()
     SkeletonWeaponDamage += 2;
     SkeletonHealth += 30;
     EventBus->OnSkeletonLevelUpDelegate.Broadcast();
+}
+void AMainGameMode::IncreaseSpawnRate()
+{
+   GetWorldTimerManager().SetTimer(SpawnTimerHandle, this, &AMainGameMode::SpawnSkeleton, 1.0f, true);
 }
