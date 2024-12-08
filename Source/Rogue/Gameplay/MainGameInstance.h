@@ -28,11 +28,13 @@ class ROGUE_API UMainGameInstance : public UGameInstance
 
   public:
     int32 GetTimerMinutes() const { return TimerMinutes; }
-    float GetMusicVolume() const { return MusicVolume; }
-    float GetSFXVolume() const { return SFXVolume; }
     USoundAttenuation* GetSoundAttenuation() const { return SoundAttenuation; }
+    float GetMusicVolume() const { return MusicVolume; }
     void SetMusicVolume(const float NewVolume) { MusicVolume = NewVolume; }
     void SetSFXVolume(const float NewVolume) { SFXVolume = NewVolume; }
+
+    UFUNCTION(BlueprintCallable)
+    float GetSFXVolume() const { return SFXVolume; }
 
     UFUNCTION(BlueprintCallable)
     void SetTimerMinutes(const int32 NewMinutes) { TimerMinutes = NewMinutes; }
