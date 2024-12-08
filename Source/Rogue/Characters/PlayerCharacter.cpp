@@ -476,6 +476,10 @@ void APlayerCharacter::TogglePauseMenu()
 }
 void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
 {
+    if (bGameOver)
+    {
+        return;
+    }
     // Debugging
     const UEnum* UpgradeClass = StaticEnum<EUpgradeType>();
     FString UpgradeName = UpgradeClass->GetNameStringByIndex(static_cast<int32>(UpgradeType));
