@@ -43,6 +43,8 @@ class ROGUE_API ASkeletonWarrior : public AHumanoid
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AExperienceOrb> ExperienceOrbBP;
 
+    FTimerHandle DeathTimer;
+
   public:
     ASkeletonWarrior();
     bool GetIsDead() const { return bIsDead; }

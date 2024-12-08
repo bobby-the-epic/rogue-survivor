@@ -97,7 +97,10 @@ void ASkeletonWarrior::TakeDamage(int32 Damage)
         SpawnExperienceOrb();
         return;
     }
-    HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+    if (IsValid(HealthBarWidget))
+    {
+        HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+    }
 }
 void ASkeletonWarrior::Knockback()
 {
@@ -138,13 +141,15 @@ void ASkeletonWarrior::Die()
         {
             GetMesh()->GetAnimInstance()->StopAllMontages(0.0f);
         }
-        EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
-        HealthBarWidgetComponent->DestroyComponent();
+        if (IsValid(this) && IsValid(EventBus))
+        {
+            EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
+        }
+        HealthBarWidgetComponent->SetHiddenInGame(true);
         SetActorEnableCollision(false);
         // Sets a timer to destroy the actor so the body lingers for a few seconds.
-        FTimerHandle TimerHandle;
         GetController()->Destroy();
-        GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::DestroyCorpse, 5.0f, false);
+        GetWorldTimerManager().SetTimer(DeathTimer, this, &ASkeletonWarrior::DestroyCorpse, 5.0f, false);
         AudioComponent->Stop();
         AudioComponent->SetSound(DeathSound);
         AudioComponent->Play();
