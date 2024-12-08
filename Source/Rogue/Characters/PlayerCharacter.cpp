@@ -347,7 +347,6 @@ void APlayerCharacter::FireArrow()
             RightArrow->SetKnockback(true);
         }
     }
-    AudioComponent->Stop();
     AudioComponent->SetSound(AttackSound);
     AudioComponent->Play();
 }
