@@ -55,18 +55,5 @@ void AMainGameMode::IncreaseSkeletonStats()
 {
     SkeletonWeaponDamage += 2;
     SkeletonHealth += 30;
-    // Gets all the skeletons in the level and increases their stats
-    TArray<AActor*> Skeletons;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), SkeletonClass, Skeletons);
-    for (AActor* Actor : Skeletons)
-    {
-        ASkeletonWarrior* Skeleton = Cast<ASkeletonWarrior>(Actor);
-        if (Skeleton->GetIsDead())
-        {
-            continue;
-        }
-        Skeleton->SetHealth(SkeletonHealth);
-        Skeleton->SetWeaponDamage(SkeletonWeaponDamage);
-        Skeleton->SpawnLevelUpEffect();
-    }
+    EventBus->OnSkeletonLevelUpDelegate.Broadcast();
 }

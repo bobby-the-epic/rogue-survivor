@@ -1,14 +1,13 @@
 #pragma once
 
-#include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "MainGameModeBase.h"
 #include "MainGameMode.generated.h"
 
 class UEventBus;
 class APlayerCharacter;
 
 UCLASS(minimalapi)
-class AMainGameMode : public AGameModeBase
+class AMainGameMode : public AMainGameModeBase
 {
     GENERATED_BODY()
 
