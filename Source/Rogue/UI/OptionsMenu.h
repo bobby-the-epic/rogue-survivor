@@ -2,6 +2,8 @@
 
 #include "Blueprint/UserWidget.h"
 #include "CoreMinimal.h"
+#include "Rogue/Gameplay/MainGameInstance.h"
+#include "Rogue/Gameplay/MainGameModeBase.h"
 #include "OptionsMenu.generated.h"
 
 class UButton;
@@ -21,6 +23,9 @@ class ROGUE_API UOptionsMenu : public UUserWidget
     UPROPERTY(meta = (BindWidget))
     USlider* SFXSlider;
 
+    UPROPERTY()
+    UMainGameInstance* GameInstance;
+
   public:
     UFUNCTION(BlueprintCallable)
     void ToggleOptionsMenu();
@@ -28,4 +33,15 @@ class ROGUE_API UOptionsMenu : public UUserWidget
   protected:
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;
+
+  private:
+    UFUNCTION()
+    void SetMusicVolume(float Value)
+    {
+        GameInstance->SetMusicVolume(Value);
+        Cast<AMainGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()))->SetMusicVolume(Value);
+    }
+
+    UFUNCTION()
+    void SetSFXVolume(float Value) { GameInstance->SetSFXVolume(Value); }
 };

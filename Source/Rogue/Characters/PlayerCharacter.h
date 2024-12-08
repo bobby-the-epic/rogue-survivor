@@ -102,9 +102,6 @@ class APlayerCharacter : public AHumanoid
     AAxeDefense* AxeDefense;
 
     UPROPERTY(EditDefaultsOnly)
-    TSubclassOf<AActor> LevelUpEffectClass;
-
-    UPROPERTY(EditDefaultsOnly)
     TSubclassOf<UPlayerHUD> PlayerHUDClass;
 
     UPROPERTY()
@@ -169,6 +166,12 @@ class APlayerCharacter : public AHumanoid
 
     UPROPERTY(EditDefaultsOnly, Category = Input)
     UInputAction* PauseAction;
+
+    UPROPERTY(EditDefaultsOnly)
+    USoundBase* CollectExperienceSound;
+
+    UPROPERTY(EditDefaultsOnly)
+    USoundBase* LevelUpSound;
 
   public:
     APlayerCharacter();

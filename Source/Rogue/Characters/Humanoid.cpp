@@ -1,6 +1,9 @@
 #include "Humanoid.h"
 #include "Components/AudioComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Rogue/Gameplay/EventBus.h"
+#include "Rogue/Gameplay/MainGameInstance.h"
+#include "Rogue/Gameplay/MainGameMode.h"
 
 AHumanoid::AHumanoid()
 {
@@ -12,6 +15,23 @@ void AHumanoid::BeginPlay()
     Super::BeginPlay();
     DamageMaterial = UMaterialInstanceDynamic::Create(GetMesh()->GetMaterial(0), this);
     GetMesh()->SetMaterial(0, DamageMaterial);
+    AudioComponent->SetVolumeMultiplier(GetGameInstance<UMainGameInstance>()->GetSFXVolume());
+    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
+    EventBus->OnSFXVolumeChangedDelegate.AddDynamic(this, &AHumanoid::SetAudioVolume);
+}
+void AHumanoid::EndPlay(EEndPlayReason::Type EndPlayReason)
+{
+    EventBus->OnSFXVolumeChangedDelegate.RemoveDynamic(this, &AHumanoid::SetAudioVolume);
+    Super::EndPlay(EndPlayReason);
+}
+void AHumanoid::TakeDamage(int32 Damage)
+{
+    if (!bIsDead)
+    {
+        StartEmissiveColorBlend(FLinearColor::Black, DamagedColor);
+        AudioComponent->SetSound(HitSound);
+        AudioComponent->Play();
+    }
 }
 void AHumanoid::StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor)
 {

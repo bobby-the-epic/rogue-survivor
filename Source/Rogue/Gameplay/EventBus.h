@@ -22,6 +22,12 @@ class ROGUE_API UEventBus : public UObject
     UDELEGATE()
     DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameOverSignature);
 
+    UDELEGATE()
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSFXVolumeChangedSignature, float, NewVolume);
+
+    UDELEGATE()
+    DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkeletonLevelUpSignature);
+
   public:
     UPROPERTY()
     FOnPlayerMovedSignature OnPlayerMovedDelegate;
@@ -37,4 +43,10 @@ class ROGUE_API UEventBus : public UObject
 
     UPROPERTY()
     FOnGameOverSignature OnGameOverDelegate;
+
+    UPROPERTY()
+    FOnSFXVolumeChangedSignature OnSFXVolumeChangedDelegate;
+
+    UPROPERTY()
+    FOnSkeletonLevelUpSignature OnSkeletonLevelUpDelegate;
 };

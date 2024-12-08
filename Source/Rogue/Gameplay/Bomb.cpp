@@ -1,8 +1,10 @@
 #include "Bomb.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "EventBus.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainGameInstance.h"
 #include "MainGameMode.h"
 #include "NiagaraComponent.h"
 #include "Rogue/Characters/SkeletonWarrior.h"
@@ -23,6 +25,9 @@ void ABomb::BeginPlay()
     EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     BombMesh->OnComponentBeginOverlap.AddDynamic(this, &ABomb::OnOverlap);
     BombMesh->OnComponentHit.AddDynamic(this, &ABomb::OnHit);
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), BombThrowSound, GetActorLocation(),
+                                          GetGameInstance<UMainGameInstance>()->GetSFXVolume(), 1.0f, 0.0f,
+                                          GetGameInstance<UMainGameInstance>()->GetSoundAttenuation());
 }
 void ABomb::EndPlay(EEndPlayReason::Type EndPlayReason)
 {
@@ -43,6 +48,9 @@ void ABomb::Explode()
         }
     }
     GetWorld()->SpawnActor<AActor>(BombExplosionClass, GetActorLocation(), FRotator::ZeroRotator);
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), BombExplosionSound, GetActorLocation(),
+                                          GetGameInstance<UMainGameInstance>()->GetSFXVolume(), 1.0f, 0.0f,
+                                          GetGameInstance<UMainGameInstance>()->GetSoundAttenuation());
     Destroy();
 }
 void ABomb::LaunchInDirection(const FVector& Direction) const

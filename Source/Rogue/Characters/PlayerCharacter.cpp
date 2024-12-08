@@ -8,8 +8,6 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/SphereComponent.h"
-#include "CoreMinimal.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/EngineTypes.h"
 #include "Engine/LocalPlayer.h"
 #include "EnhancedInputComponent.h"
@@ -24,7 +22,6 @@
 #include "Rogue/Gameplay/AxeDefense.h"
 #include "Rogue/Gameplay/Bomb.h"
 #include "Rogue/Gameplay/EventBus.h"
-#include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/DeathMenu.h"
 #include "Rogue/UI/GameOverMenu.h"
 #include "Rogue/UI/PauseMenu.h"
@@ -134,7 +131,6 @@ void APlayerCharacter::BeginPlay()
         PauseMenu->SetVisibility(ESlateVisibility::Hidden);
         PauseMenu->AddToViewport();
     }
-    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnCollectiblePickupDelegate.AddDynamic(this, &APlayerCharacter::AddExperience);
     EventBus->OnGameOverDelegate.AddDynamic(this, &APlayerCharacter::GameOver);
     GetWorldTimerManager().SetTimer(GameTimer, this, &APlayerCharacter::UpdateTimer, 1.0f, true);
@@ -351,6 +347,9 @@ void APlayerCharacter::FireArrow()
             RightArrow->SetKnockback(true);
         }
     }
+    AudioComponent->Stop();
+    AudioComponent->SetSound(AttackSound);
+    AudioComponent->Play();
 }
 void APlayerCharacter::ReloadArrow()
 {
@@ -398,9 +397,12 @@ void APlayerCharacter::TakeDamage(int32 Damage)
 void APlayerCharacter::StartDeathState()
 {
     bIsDead = true;
+    if (IsValid(AxeDefense))
+    {
+        AxeDefense->Destroy();
+    }
     EventBus->OnPlayerDeathDelegate.Broadcast();
     DisableInput(Cast<APlayerController>(GetController()));
-    GetWorldTimerManager().ClearAllTimersForObject(this);
     PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
     //  Creates a "death cam" (not actually a camera, just an actor with a placeholder mesh)
     //  and moves the camera view to it smoothly with the SetViewTargetWithBlend function.
@@ -424,6 +426,9 @@ void APlayerCharacter::StartDeathState()
         DeathMenu->AddToViewport();
         PlayerController->SetShowMouseCursor(true);
     }
+    AudioComponent->Stop();
+    AudioComponent->SetSound(DeathSound);
+    AudioComponent->Play();
 }
 void APlayerCharacter::AddExperience()
 {
@@ -436,6 +441,8 @@ void APlayerCharacter::AddExperience()
         EventBus->OnPlayerLevelUpDelegate.Broadcast();
     }
     PlayerHUD->SetExperience(CurrentExperience, MaxExperience);
+    AudioComponent->SetSound(CollectExperienceSound);
+    AudioComponent->Play();
 }
 void APlayerCharacter::StartLaunchingBombs()
 {
@@ -512,7 +519,9 @@ void APlayerCharacter::ApplyUpgrade(EUpgradeType UpgradeType)
             UE_LOGFMT(LogTemp, Warning, "The {0} upgrade has not been implemented.", UpgradeName);
             break;
     }
-    GetWorld()->SpawnActor<AActor>(LevelUpEffectClass, GetActorLocation(), FRotator::ZeroRotator);
+    LevelUp();
+    AudioComponent->SetSound(LevelUpSound);
+    AudioComponent->Play();
 }
 void APlayerCharacter::GameOver()
 {
@@ -524,7 +533,6 @@ void APlayerCharacter::GameOver()
         GameOverMenu = CreateWidget<UGameOverMenu>(PlayerController, GameOverMenuClass);
         GameOverMenu->AddToViewport();
         DisableInput(PlayerController);
-        GetWorldTimerManager().ClearAllTimersForObject(this);
         PlayerController->SetShowMouseCursor(true);
     }
 }

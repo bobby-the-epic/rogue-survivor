@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Humanoid.h"
 #include "SkeletonWarrior.generated.h"
 
@@ -44,10 +43,6 @@ class ROGUE_API ASkeletonWarrior : public AHumanoid
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AExperienceOrb> ExperienceOrbBP;
 
-    UPROPERTY(EditDefaultsOnly)
-    TSubclassOf<AActor> LevelUpEffectClass;
-
-    
   public:
     ASkeletonWarrior();
     bool GetIsDead() const { return bIsDead; }
@@ -56,14 +51,13 @@ class ROGUE_API ASkeletonWarrior : public AHumanoid
     void Die();
     void SetWeaponDamage(int32 NewDamage) { WeaponDamage = NewDamage; }
     void SetHealth(int32 NewHealth);
-    void SpawnLevelUpEffect()
-    {
-        GetWorld()->SpawnActor<AActor>(LevelUpEffectClass, GetActorLocation(), FRotator::ZeroRotator);
-    }
 
   protected:
     virtual void BeginPlay() override;
     virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+
+    UFUNCTION()
+    virtual void LevelUp() override;
 
   private:
     void SpawnExperienceOrb();
@@ -85,5 +79,4 @@ class ROGUE_API ASkeletonWarrior : public AHumanoid
 
     UFUNCTION()
     void Celebrate();
-
-    };
+};

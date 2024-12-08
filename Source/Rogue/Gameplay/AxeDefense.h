@@ -8,6 +8,7 @@ class USceneComponent;
 class URotatingMovementComponent;
 class UChildActorComponent;
 class USphereComponent;
+class USoundBase;
 
 UCLASS()
 class ROGUE_API AAxeDefense : public AActor
@@ -43,6 +44,9 @@ class ROGUE_API AAxeDefense : public AActor
 
     UPROPERTY()
     ACharacter* Player;
+
+    UPROPERTY(EditDefaultsOnly)
+    USoundBase* AxeChopSound;
 
   public:
     AAxeDefense();

@@ -8,6 +8,8 @@ class UStaticMeshComponent;
 class USphereComponent;
 class UEventBus;
 class UNiagaraComponent;
+class USoundBase;
+class UAudioComponent;
 
 UCLASS()
 class ROGUE_API ABomb : public AActor
@@ -31,6 +33,12 @@ class ROGUE_API ABomb : public AActor
 
     UPROPERTY(EditDefaultsOnly)
     TSubclassOf<AActor> BombExplosionClass;
+
+    UPROPERTY(EditDefaultsOnly)
+    USoundBase* BombThrowSound;
+
+    UPROPERTY(EditDefaultsOnly)
+    USoundBase* BombExplosionSound;
 
   public:
     ABomb();

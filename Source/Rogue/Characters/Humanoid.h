@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Components/AudioComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Humanoid.generated.h"
 
 class UEventBus;
-class UAudioComponent;
 class USoundBase;
 class UMaterialInstanceDynamic;
 
@@ -49,19 +49,28 @@ class AHumanoid : public ACharacter
     USoundBase* HitSound;
 
     UPROPERTY(EditDefaultsOnly)
-    USoundBase* FootstepSound;
+    USoundBase* AttackSound;
 
     UPROPERTY(EditDefaultsOnly)
-    USoundBase* AttackSound;
+    TSubclassOf<AActor> LevelUpEffectClass;
 
   public:
     AHumanoid();
-    virtual void TakeDamage(int32 Damage) { StartEmissiveColorBlend(FLinearColor::Black, DamagedColor); }
+    virtual void TakeDamage(int32 Damage);
 
   protected:
     virtual void BeginPlay() override;
+    virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+    virtual void LevelUp()
+    {
+        GetWorld()->SpawnActor<AActor>(LevelUpEffectClass, GetActorLocation(), FRotator::ZeroRotator);
+    }
     void StartEmissiveColorBlend(const FLinearColor& StartLerpColor, const FLinearColor& EndLerpColor);
 
     UFUNCTION()
     void BlendEmissiveColor();
+
+  private:
+    UFUNCTION()
+    void SetAudioVolume(const float NewVolume) { AudioComponent->SetVolumeMultiplier(NewVolume); }
 };

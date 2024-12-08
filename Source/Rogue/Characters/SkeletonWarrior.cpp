@@ -7,7 +7,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Rogue/Gameplay/EventBus.h"
 #include "Rogue/Gameplay/ExperienceOrb.h"
-#include "Rogue/Gameplay/MainGameMode.h"
 #include "Rogue/UI/EnemyHealthBar.h"
 
 ASkeletonWarrior::ASkeletonWarrior()
@@ -32,9 +31,9 @@ void ASkeletonWarrior::BeginPlay()
 {
     Super::BeginPlay();
 
-    EventBus = Cast<AMainGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->GetEventBus();
     EventBus->OnPlayerMovedDelegate.AddDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     EventBus->OnPlayerDeathDelegate.AddDynamic(this, &ASkeletonWarrior::Celebrate);
+    EventBus->OnSkeletonLevelUpDelegate.AddDynamic(this, &ASkeletonWarrior::LevelUp);
     HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetWidget());
     if (SpawnMontage)
     {
@@ -58,6 +57,7 @@ void ASkeletonWarrior::EndPlay(EEndPlayReason::Type EndPlayReason)
         EventBus->OnPlayerMovedDelegate.RemoveDynamic(this, &ASkeletonWarrior::UpdateHealthBarRotation);
     }
     EventBus->OnPlayerDeathDelegate.RemoveDynamic(this, &ASkeletonWarrior::Celebrate);
+    EventBus->OnSkeletonLevelUpDelegate.RemoveDynamic(this, &ASkeletonWarrior::LevelUp);
     GetMesh()->GetAnimInstance()->OnMontageEnded.RemoveDynamic(this, &ASkeletonWarrior::EndSpawning);
     GetWorldTimerManager().ClearAllTimersForObject(this);
 
@@ -122,11 +122,12 @@ void ASkeletonWarrior::Attack() const
     {
         Cast<AHumanoid>(Player)->TakeDamage(WeaponDamage);
     }
+    AudioComponent->SetSound(AttackSound);
+    AudioComponent->Play();
 }
 void ASkeletonWarrior::Celebrate()
 {
     bIsPlayerDead = true;
-    GetController()->Destroy();
 }
 void ASkeletonWarrior::Die()
 {
@@ -144,6 +145,9 @@ void ASkeletonWarrior::Die()
         FTimerHandle TimerHandle;
         GetController()->Destroy();
         GetWorldTimerManager().SetTimer(TimerHandle, this, &ASkeletonWarrior::DestroyCorpse, 5.0f, false);
+        AudioComponent->Stop();
+        AudioComponent->SetSound(DeathSound);
+        AudioComponent->Play();
     }
 }
 void ASkeletonWarrior::SpawnExperienceOrb()
@@ -157,4 +161,10 @@ void ASkeletonWarrior::SetHealth(int32 NewHealth)
     MaxHealth = NewHealth;
     CurrentHealth = NewHealth;
     HealthBarWidget->SetHealth(CurrentHealth, MaxHealth);
+}
+void ASkeletonWarrior::LevelUp()
+{
+    Super::LevelUp();
+    WeaponDamage += 2;
+    SetHealth(MaxHealth + 30);
 }
